@@ -17,6 +17,7 @@ return new class extends Migration {
             // $table->enum('roles', ['anggota', 'manager', 'kasir', 'admin']);
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
+            $table->softDeletes();
             $table->timestamps();
         });
 
