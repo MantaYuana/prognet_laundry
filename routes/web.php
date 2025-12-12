@@ -10,6 +10,8 @@ use App\Livewire\Welcome;
 use App\Livewire\OutletTable;
 
 Route::get('/', Welcome::class);
+Route::redirect('/', '/login');
+// Route::get('/', Welcome::class);
 // Route::view('/', 'welcome');
 
 Route::view('dashboard', 'dashboard')
