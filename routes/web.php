@@ -5,8 +5,10 @@ use App\Http\Controllers\UserManagementController;
 use App\Models\Outlet;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
+use App\Livewire\Welcome;
 
-Route::view('/', 'welcome');
+Route::get('/', Welcome::class);
+// Route::view('/', 'welcome');
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
@@ -16,7 +18,7 @@ Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');
 
-Route::resource('users', UserManagementController::class);
+// Route::resource('users', UserManagementController::class);
 // Admin Route
 // TODO: implement middleware
 Route::prefix('admin')->name('admin')->group(function () {
@@ -25,13 +27,13 @@ Route::prefix('admin')->name('admin')->group(function () {
 
 // Owner Route
 Route::prefix('owner')->name('owner.')->group(function () {
-    Route::resource('outlets', OutletManagementController::class)->only([
-        'index',
-        'store',
-        'update',
-        'show',
-        'destroy'
-    ]);
+    // Route::resource('outlets', OutletManagementController::class)->only([
+    //     'index',
+    //     'store',
+    //     'update',
+    //     'show',
+    //     'destroy'
+    // ]);
 });
 
 require __DIR__ . '/auth.php';
