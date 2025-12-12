@@ -19,6 +19,7 @@
     --color-destructive: #fc4f4f;
     --color-warning: #ff9900;
     --color-line: #d7d7d7;
+    --color-odd-row: #f0f0f0;
 }
 
 @layer base {

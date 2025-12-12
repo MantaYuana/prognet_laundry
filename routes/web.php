@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 use App\Livewire\Welcome;
 
+use App\Livewire\OutletTable;
+
 Route::get('/', Welcome::class);
 // Route::view('/', 'welcome');
 
@@ -35,5 +37,8 @@ Route::prefix('owner')->name('owner.')->group(function () {
     //     'destroy'
     // ]);
 });
+
+// Outlet Route (danesh) 
+Route::view('/outlet', 'livewire.outlet.index')->name('outlet.index');
 
 require __DIR__ . '/auth.php';
