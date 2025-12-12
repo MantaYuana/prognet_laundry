@@ -7,7 +7,8 @@ use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 use App\Livewire\Welcome;
 
-Route::get('/', Welcome::class);
+Route::redirect('/', '/login');
+// Route::get('/', Welcome::class);
 // Route::view('/', 'welcome');
 
 Route::view('dashboard', 'dashboard')
