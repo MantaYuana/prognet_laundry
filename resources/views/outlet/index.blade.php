@@ -5,6 +5,7 @@
             :columns="['name', 'address', 'phone_number']"
             title="Outlet"
             createRoute="outlet.create"
+            editRoute="outlet.edit"
         />
     </div>
 </x-app-layout>

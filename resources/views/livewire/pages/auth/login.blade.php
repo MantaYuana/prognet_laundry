@@ -92,7 +92,7 @@ new #[Layout('layouts.guest'), Title('Luxe - Login')] class extends Component {
         </form>
         <div class="register-info mt-4 text-xs text-gray-600">
             No Account?
-            <a href="{{ route('register'); }}" class="register-link text-link hover:underline font-medium">Register Here</a>
+            <a href="{{ route('register') }}" class="register-link text-link hover:underline font-medium">Register Here</a>
         </div>
         <div class="divider flex items-center w-full max-w-xs my-6">
             <div class="grow border-t border-line"></div>

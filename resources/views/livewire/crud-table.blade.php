@@ -32,13 +32,6 @@
     {{-- TABLE --}}
     <table class="w-full bg-surface border border-line rounded-t-lg border-separate border-spacing-0 overflow-hidden">
 
-        {{-- <tr>
-            <th class="border-b border-line px-6 w-[5%] py-4 font-medium bg-odd-row">No</th>
-            <th class="border-b border-line px-6 w-[20%] py-4 font-medium bg-odd-row">Nama Outlet</th>
-            <th class="border-b border-line px-12 w-[25%] py-4 font-medium bg-odd-row">Alamat</th>
-            <th class="border-b border-line px-12 w-[15%] py-4 font-medium bg-odd-row">Telp</th>
-            <th class="border-b border-line w-[15%] font-medium bg-odd-row">Action</th>
-        </tr> --}}
         <tr>
             {{-- NO --}}
             <th class="border-b border-line px-6 py-4 font-medium bg-odd-row text-center w-[5%]">
@@ -75,13 +68,14 @@
 
                 {{-- ACTION --}}
                 <td class="text-center">
-                    <button wire:click="edit({{ $row->id }})"
-                        class="text-warning cursor-pointer hover:opacity-80 transition-all px-3 underline rounded-md">
-                        Edit
-                    </button>
+                    @if($editRoute)
+                        <a href="{{ route($editRoute, $row) }}" class="hover:opacity-80 text-warning underline px-3">
+                            Edit
+                        </a>
+                    @endif
 
-                    <button wire:click="delete({{ $row->id }})"
-                        class="text-destructive cursor-pointer hover:opacity-80 transition-all px-3 underline rounded-md">
+                    <button onclick="confirm('Yakin ingin menghapus data ini?') || event.stopImmediatePropagation()"
+                        wire:click="delete({{ $row->id }})" class="hover:opacity-80 text-destructive underline px-3 cursor-pointer">
                         Delete
                     </button>
                 </td>
@@ -89,21 +83,6 @@
             </tr>
         @endforeach
 
-
-        {{-- @foreach($rows as $i => $row)
-        <tr class="border border-line">
-            <td class="text-center py-6 p-3">{{ $rows->firstItem() + $i }}</td>
-            <td class="text-center">{{ $row->nama }}</td>
-            <td class="text-center">{{ $row->alamat }}</td>
-            <td class="text-center">{{ $row->telp }}</td>
-            <td class="text-center">
-                <button wire:click="edit({{ $row->id }})"
-                    class="text-warning cursor-pointer hover:opacity-80 transition-all px-3 underline rounded-md">Edit</button>
-                <button wire:click="delete({{ $row->id }})"
-                    class="text-destructive cursor-pointer hover:opacity-80 transition-all px-3 underline rounded-md">Delete</button>
-            </td>
-        </tr>
-        @endforeach --}}
     </table>
 
     {{-- PAGINATION --}}
