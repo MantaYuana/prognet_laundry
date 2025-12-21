@@ -35,7 +35,7 @@ class OutletController extends Controller {
 
     public function edit(Outlet $outlet) {
         $target_outlet = Outlet::find($outlet);
-        return view('outlet.edit', $target_outlet);
+        return view('outlet.edit', compact('outlet'));
     }
 
     public function update(Request $request, Outlet $outlet) {

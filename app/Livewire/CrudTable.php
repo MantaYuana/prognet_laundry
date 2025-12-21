@@ -14,16 +14,18 @@ class CrudTable extends Component
     public $title = '';
     public $search = '';
     public $createRoute;
+    public $editRoute;
 
 
     protected $queryString = ['search'];
 
-    public function mount($model, $columns, $title = '', $createRoute = null)
+    public function mount($model, $columns, $title = '', $createRoute = null, $editRoute = null)
     {
         $this->model = "App\\Models\\" . $model;
         $this->columns = $columns;
         $this->title = $title ?: $model;
         $this->createRoute = $createRoute;
+        $this->editRoute = $editRoute;
     }
 
     public function render()
