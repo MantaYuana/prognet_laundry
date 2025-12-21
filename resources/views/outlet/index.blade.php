@@ -2,7 +2,7 @@
     <div class="px-24 py-8">
         <livewire:crud-table
             model="Outlet"
-            :columns="['nama', 'alamat', 'telp']"
+            :columns="['name', 'address', 'phone_number']"
             title="Outlet"
             createRoute="outlet.create"
         />
