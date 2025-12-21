@@ -1,11 +1,10 @@
-@extends('layouts.app')
-
-@section('content')
-    <div>
+<x-app-layout>
+    <div class="px-24 py-8">
         <livewire:crud-table
             model="Outlet"
             :columns="['nama', 'alamat', 'telp']"
-            title="Data Outlet"
+            title="Outlet"
+            createRoute="outlet.create"
         />
     </div>
-@endsection
+</x-app-layout>

@@ -13,14 +13,17 @@ class CrudTable extends Component
     public $columns = [];  // e.g., ['nama', 'alamat', 'telp']
     public $title = '';
     public $search = '';
+    public $createRoute;
+
 
     protected $queryString = ['search'];
 
-    public function mount($model, $columns, $title = '')
+    public function mount($model, $columns, $title = '', $createRoute = null)
     {
-        $this->model = "App\\Models\\" . $model;  
+        $this->model = "App\\Models\\" . $model;
         $this->columns = $columns;
         $this->title = $title ?: $model;
+        $this->createRoute = $createRoute;
     }
 
     public function render()
@@ -54,3 +57,4 @@ class CrudTable extends Component
         $this->model::find($id)->delete();
     }
 }
+
