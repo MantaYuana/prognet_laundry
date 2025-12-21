@@ -74,7 +74,7 @@
                         </a>
                     @endif
 
-                    <button onclick="confirm('Yakin ingin menghapus data ini?') || event.stopImmediatePropagation()"
+                    <button onclick="confirm('Delete this data?') || event.stopImmediatePropagation()"
                         wire:click="delete({{ $row->id }})" class="hover:opacity-80 text-destructive underline px-3 cursor-pointer">
                         Delete
                     </button>
