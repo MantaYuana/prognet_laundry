@@ -23,9 +23,9 @@ class OutletTable extends Component
     {
         $rows = Outlet::query()
             ->when($this->search, function ($query) {
-                $query->where('nama', 'like', '%' . $this->search . '%')
-                      ->orWhere('alamat', 'like', '%' . $this->search . '%')
-                      ->orWhere('telp', 'like', '%' . $this->search . '%');
+                $query->where('name', 'like', '%' . $this->search . '%')
+                      ->orWhere('address', 'like', '%' . $this->search . '%')
+                      ->orWhere('phone_number', 'like', '%' . $this->search . '%');
             })
             ->paginate(5);
 

@@ -4,16 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Outlet extends Model
 {
-    use HasFactory;
-
-    protected $table = 'tb_outlet'; // important if your table isn't "outlets"
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'nama',
-        'alamat',
-        'telp',
+        'name',
+        'address',
+        'phone_number',
     ];
+
+    public function owner()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

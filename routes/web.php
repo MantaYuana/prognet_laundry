@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\OutletManagementController;
+use App\Http\Controllers\OutletController;
 use App\Http\Controllers\UserManagementController;
 use App\Models\Outlet;
 use Illuminate\Support\Facades\Route;
@@ -22,7 +22,8 @@ Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');
 
-// Route::resource('users', UserManagementController::class);
+Route::resource('outlet', OutletController::class);
+Route::resource('users', UserManagementController::class);
 // Admin Route
 // TODO: implement middleware
 Route::prefix('admin')->name('admin')->group(function () {
