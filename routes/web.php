@@ -42,6 +42,6 @@ Route::prefix('owner')->name('owner.')->group(function () {
 });
 
 // Outlet Route (danesh) 
-Route::view('/outlet', 'livewire.outlet.index')->name('outlet.index');
+// Route::view('/outlet', 'livewire.outlet.index')->name('outlet.index');
 
 require __DIR__ . '/auth.php';
