@@ -13,11 +13,11 @@ class UserManagementController extends Controller {
         $search = $request->input('search');
         $usersPaginated = User::all();
 
-        return view('admin.users.index', [$usersPaginated]);
+        return view('pages.admin.users.index', [$usersPaginated]);
     }
 
     public function create() {
-        return view('admin.users.create');
+        return view('pages.admin.users.create');
     }
 
     public function store(Request $request) {
@@ -33,7 +33,7 @@ class UserManagementController extends Controller {
             'password' => Hash::make($validated['password']),
         ]);
 
-        return to_route('admin.users.index')->with('success', 'User created successfully');
+        return to_route('pages.admin.users.index')->with('success', 'User created successfully');
     }
 
     public function edit(User $user) {
@@ -54,7 +54,7 @@ class UserManagementController extends Controller {
             'password' => Hash::make($validated['password']),
         ]);
 
-        return to_route('admin.users.index')->with('success', 'User created successfully');
+        return to_route('pages.admin.users.index')->with('success', 'User updated successfully');
     }
 
     public function destroy(User $user) {

@@ -10,11 +10,11 @@ class OutletController extends Controller {
         $search = $request->input('search');
         $usersPaginated = Outlet::all();
 
-        return view('outlet.index', [$usersPaginated]);
+        return view('pages.outlet.index', [$usersPaginated]);
     }
 
     public function create() {
-        return view('outlet.create');
+        return view('pages.outlet.create');
     }
 
     public function store(Request $request) {
@@ -30,7 +30,7 @@ class OutletController extends Controller {
             'phone_number' => $validated['phone_number'],
         ]);
 
-        return to_route('outlet.index')->with('success', 'Outlet created successfully');
+        return to_route('pages.outlet.index')->with('success', 'Outlet created successfully');
     }
 
     public function edit(Outlet $outlet) {
@@ -51,7 +51,7 @@ class OutletController extends Controller {
             'phone_number' => $validated['phone_number'],
         ]);
 
-        return to_route('outlet.index')->with('success', 'Outlet updated successfully');
+        return to_route('pages.outlet.index')->with('success', 'Outlet updated successfully');
     }
 
     public function destroy(Outlet $outlet) {

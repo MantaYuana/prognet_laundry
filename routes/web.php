@@ -9,7 +9,7 @@ use App\Livewire\Welcome;
 
 use App\Livewire\OutletTable;
 
-// Route::get('/', Welcome::class);
+Route::view('/', 'welcome');
 Route::redirect('/', '/login');
 // Route::get('/', Welcome::class);
 // Route::view('/', 'welcome');
