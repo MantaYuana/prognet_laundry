@@ -49,6 +49,6 @@ class User extends Authenticatable
     }
 
     public function outlets() {
-        return $this->hasMany(User::class);
+        return $this->hasMany(Outlet::class);
     }
 }

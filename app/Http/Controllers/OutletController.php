@@ -4,11 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Outlet;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class OutletController extends Controller {
     public function index(Request $request) {
         $search = $request->input('search');
-        $usersPaginated = Outlet::all();
+        $user = User::find(Auth::id());
+        $usersPaginated = $user->outlets;
 
         return view('pages.outlet.index', [$usersPaginated]);
     }
