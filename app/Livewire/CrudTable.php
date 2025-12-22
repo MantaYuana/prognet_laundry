@@ -3,51 +3,77 @@
 namespace App\Livewire;
 
 use Livewire\Component;
-use Livewire\WithPagination;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class CrudTable extends Component
 {
-    use WithPagination;
 
-    public $model;         // e.g., 'App\Models\Outlet'
-    public $columns = [];  // e.g., ['nama', 'alamat', 'telp']
+    public $model;          // e.g., 'App\Models\Outlet'
+    public $sourceRows; // data dari controller (collection)
+    public $columns = [];   // e.g., ['nama', 'alamat', 'telp']
+
     public $title = '';
-    public $search = '';
     public $createRoute;
     public $editRoute;
 
+    public string $search = '';
+    public int $page = 1;
 
-    protected $queryString = ['search'];
+    public $perPage = 5;
 
-    public function mount($model, $columns, $title = '', $createRoute = null, $editRoute = null)
+
+    public function mount($rows, $columns, $title = '', $createRoute = null, $editRoute = null)
     {
-        $this->model = "App\\Models\\" . $model;
+        $this->sourceRows = collect($rows);
         $this->columns = $columns;
-        $this->title = $title ?: $model;
+        $this->title = $title;
         $this->createRoute = $createRoute;
         $this->editRoute = $editRoute;
     }
 
     public function render()
     {
-        $query = $this->model::query();
+        // Filter data berdasarkan input search
+        $filtered = $this->sourceRows->filter(function ($item) {
+            if ($this->search === '')
+                return true;
 
-        // Dynamic search
-        if ($this->search) {
             foreach ($this->columns as $col) {
-                $query->orWhere($col, 'like', '%' . $this->search . '%');
+                if (
+                    isset($item->$col) &&
+                    str_contains(
+                        strtolower((string) $item->$col),
+                        strtolower($this->search)
+                    )
+                ) {
+                    return true;
+                }
             }
-        }
+            return false;
+        });
 
-        $rows = $query->paginate(5);
+        // Tentukan halaman aktif untuk pagination
+        $page = $this->page;
 
+        // Lakukan pagination manual tanpa query database
+        $rows = new LengthAwarePaginator(
+            $filtered->forPage($page, $this->perPage)->values(),
+            $filtered->count(),
+            $this->perPage,
+            $page,
+            ['path' => request()->url()]
+        );
+
+        // Kirim data hasil filter dan pagination ke view
         return view('livewire.crud-table', [
-            'rows' => $rows,
-            'columns' => $this->columns,
-            'title' => $this->title,
-            'modelName' => $this->model
+            'rows' => $rows
         ]);
     }
+    public function updatedSearch()
+    {
+        $this->page = 1;
+    }
+
 
     public function edit($id)
     {
@@ -58,5 +84,16 @@ class CrudTable extends Component
     {
         $this->model::find($id)->delete();
     }
+
+    public function nextPage()
+    {
+        $this->page++;
+    }
+
+    public function previousPage()
+    {
+        $this->page = max(1, $this->page - 1);
+    }
+
 }
 

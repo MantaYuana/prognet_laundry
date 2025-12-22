@@ -15,10 +15,11 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-
     <!-- Font Awesome AFTER Tailwind -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css">
+    @livewireStyles
 </head>
+
 <body class="font-sans antialiased">
     <div class="min-h-screen bg-gray-100">
         <livewire:layout.navigation />
@@ -37,6 +38,7 @@
             {{ $slot }}
         </main>
     </div>
+    @livewireScripts
 </body>
 
 </html>
