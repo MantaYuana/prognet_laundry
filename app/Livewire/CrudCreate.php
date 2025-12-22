@@ -35,10 +35,7 @@ class CrudCreate extends Component
             ])->toArray()
         );
 
-        if (auth()->check() && \Schema::hasColumn((new $this->model)->getTable(), 'user_id')) {
-            $data['user_id'] = auth()->id();
-        }
-        $this->model::create($data);
+        auth()->user()->outlets()->create($data);
 
         if ($this->redirectRoute) {
             return redirect()->route($this->redirectRoute);
