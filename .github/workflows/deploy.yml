@@ -1,0 +1,68 @@
+name: CI/CD Deploy to Debian
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  # Job 1: Build & Test (The CI Part)
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, bcmath, pdo_mysql
+
+      - name: Install Composer Dependencies
+        run: composer install --prefer-dist --no-ansi --no-interaction --no-progress --no-scripts
+
+      - name: Copy .env
+        run: cp .env.example .env
+
+      - name: Generate Key
+        run: php artisan key:generate
+
+      # Optional: Run Tests
+      # - name: Run Tests
+      #   run: php artisan test
+
+  # Job 2: Deploy (The CD Part)
+  deploy:
+    # needs: build-test # Only runs if build-test passes
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: 'just-a-placeholder-so-we-dont-get-errors'
+          if_key_exists: replace
+
+      - name: Adding Known Hosts
+        run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy with rsync
+        run: rsync -avz -e "ssh" ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/web1
+
+      - name: Run Remote Commands (Artisan Migrate, Clear Cache)
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /var/www/web1
+            composer install --no-interaction --prefer-dist --optimize-autoloader
+            php artisan migrate --force
+            php artisan optimize:clear
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+            # Ensure permissions are correct (adjust 'www-data' if needed)
+            chown -R www-data:www-data /var/www/web1
