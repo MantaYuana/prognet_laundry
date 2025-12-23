@@ -6,12 +6,13 @@
         {{-- SEARCH --}}
         <div class="h-16 flex justify-start flex-row items-center">
             <div class="flex justify-start items-center">
-                <input wire:model.debounce.300ms="search" type="text" placeholder="Search..."
-                    class="pl-3 outline-none bg-surface border border-r-0 border-line rounded-bl-md rounded-tl-md py-2">
+                <input wire:model.live="search" type="text" placeholder="Search..."
+                    class="pl-3 outline-none border-r-0 bg-surface border border-line rounded-l-md py-2" />
 
                 <button class="px-3 bg-surface py-2 rounded-br-md border border-l-0 border-line rounded-tr-md">
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </button>
+
             </div>
 
             <p class="ml-3 font-medium">{{ $title }}</p>
@@ -41,7 +42,7 @@
             {{-- DYNAMIC COLUMNS --}}
             @foreach($columns as $col)
                 <th class="border-b border-line px-6 py-4 font-medium bg-odd-row text-center">
-                    {{ ucfirst($col) }}
+                    {{ ucwords(str_replace('_', ' ', $col)) }}
                 </th>
             @endforeach
 
@@ -51,7 +52,7 @@
             </th>
         </tr>
 
-        @foreach($rows as $i => $row)
+        @forelse($rows as $i => $row)
             <tr class="border border-line">
 
                 {{-- NO --}}
@@ -69,19 +70,26 @@
                 {{-- ACTION --}}
                 <td class="text-center">
                     @if($editRoute)
-                        <a href="{{ route($editRoute, $row) }}" class="hover:opacity-80 text-warning underline px-3">
+                        <a href="{{ route($editRoute, $row) }}" class="text-warning underline px-3">
                             Edit
                         </a>
                     @endif
-
                     <button onclick="confirm('Delete this data?') || event.stopImmediatePropagation()"
-                        wire:click="delete({{ $row->id }})" class="hover:opacity-80 text-destructive underline px-3 cursor-pointer">
+                        wire:click="delete({{ $row->id }})"
+                        class="hover:opacity-80 text-destructive underline px-3 cursor-pointer">
                         Delete
                     </button>
                 </td>
 
             </tr>
-        @endforeach
+        @empty
+            <tr>
+                <td colspan="{{ count($columns) + 2 }}" class="text-center py-6 text-gray-500 italic">
+                    Data not found
+                </td>
+            </tr>
+        @endforelse
+
 
     </table>
 
