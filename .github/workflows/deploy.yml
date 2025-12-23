@@ -44,11 +44,14 @@ jobs:
           known_hosts: 'just-a-placeholder-so-we-dont-get-errors'
           if_key_exists: replace
 
-      - name: Adding Known Hosts
-        run: ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+      - name: Create dir if not exits
+        run: mkdir -p ~/.ssh 
 
+      - name: Adding Known Hosts
+        run: ssh-keyscan -p 2121 -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+        
       - name: Deploy with rsync
-        run: rsync -avz -e "ssh" ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/web1
+        run: rsync -avz -e "ssh -p 2121" ./ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:/var/www/web1
 
       - name: Run Remote Commands (Artisan Migrate, Clear Cache)
         uses: appleboy/ssh-action@master
@@ -56,13 +59,19 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 2121
           script: |
             cd /var/www/web1
             composer install --no-interaction --prefer-dist --optimize-autoloader
-            php artisan migrate --force
+            npm install
+            npm run build
+            php artisan migrate
             php artisan optimize:clear
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
-            # Ensure permissions are correct (adjust 'www-data' if needed)
-            chown -R www-data:www-data /var/www/web1
+            sudo chown -R $USER:www-data .
+
+            sudo find . -type d -exec chmod 775 {} \;
+            sudo find . -type f -exec chmod 664 {} \;
+            sudo chmod -R 775 storage bootstrap/cache
