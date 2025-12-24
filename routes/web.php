@@ -21,6 +21,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('outlet.services', LaundryServiceController::class);
     Route::resource('outlet', OutletController::class);
     Route::resource('staff', StaffManagementController::class);
+    
 });
 
 Route::prefix('admin')->name('admin.')->group(function () {

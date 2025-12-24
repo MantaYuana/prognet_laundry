@@ -3,20 +3,33 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Outlet;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Outlet;
+
+
+Auth::loginUsingId(1); // login paksa sebagai user id 1
+
+// use App\Models\User;
 
 class OutletController extends Controller
 {
+    // public function index(Request $request)
+    // {
+    //     $search = $request->input('search');
+    //     $user = User::find(Auth::id());
+    //     $outletPaginated = $user->outlets;
+
+    //     // return view('pages.outlet.index', [$usersPaginated]);
+    //     return view('pages.outlet.index', compact('outletPaginated'));
+    // }
+
+
     public function index(Request $request)
     {
-        $search = $request->input('search');
-        $user = User::find(Auth::id());
-        $outletPaginated = $user->outlets;
+        $rows = Outlet::where('user_id', Auth::id())
+            ->paginate(5);
 
-        // return view('pages.outlet.index', [$usersPaginated]);
-        return view('pages.outlet.index', compact('outletPaginated'));
+        return view('pages.outlet.index', compact('rows'));
     }
 
     public function create()

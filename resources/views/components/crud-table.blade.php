@@ -1,74 +1,105 @@
-<div class="bg-surface">
+<div>
 
-    <!-- TOP BAR -->
-    <div class="w-full mt-6 flex flex-row justify-between">
+    {{-- TOP BAR --}}
+    <div class="w-full mt-6 flex justify-between items-center">
 
-        <!-- SEARCH -->
-        <div class="h-16 flex justify-start flex-row items-center">
-            <div class="flex justify-start items-center">
-                <input 
-                    wire:model.debounce.300ms="search"
-                    type="text"
+        {{-- SEARCH --}}
+        <form method="GET" class="flex items-center">
+            <div class="flex items-center">
+                <input
+                    name="search"
+                    value="{{ request('search') }}"
                     placeholder="Search..."
-                    class="pl-3 outline-none bg-surface border border-r-0 border-line rounded-bl-md rounded-tl-md py-2"
-                >
-                <button class="px-3 bg-surface py-2 rounded-br-md border border-l-0 border-line rounded-tr-md">
-                    <i class="fa-solid fa-search text-slate-950"></i>
+                    class="pl-3 outline-none border-r-0 bg-surface border border-line rounded-l-md py-2"
+                />
+
+                <button
+                    type="submit"
+                    class="px-3 bg-surface py-2 rounded-r-md border border-l-0 border-line">
+                    <i class="fa-solid fa-magnifying-glass"></i>
                 </button>
             </div>
 
-            <p class="ml-3">{{ $title }}</p>
-        </div>
+            <p class="ml-3 font-medium">{{ $title }}</p>
+        </form>
 
-        <!-- INSERT BUTTON -->
-        <div class="flex items-center justify-center">
-            <a href="#" class="w-[150px] text-center bg-primary py-2 px-3 rounded-md hover:opacity-80 font-bold text-white">
+        {{-- INSERT BUTTON --}}
+        @if ($createRoute)
+            <a href="{{ route($createRoute) }}"
+               class="bg-primary py-2 px-3 rounded-md hover:opacity-80 font-bold text-white">
                 + Insert
             </a>
-        </div>
-
+        @endif
     </div>
 
-    <!-- TABLE -->
-    <table class="w-full bg-surface border border-line rounded-t-lg border-separate border-spacing-0 overflow-hidden">
+    {{-- TABLE --}}
+    <table class="w-full mt-4 bg-surface border border-line rounded-t-lg border-separate border-spacing-0 overflow-hidden">
 
+        <thead>
         <tr>
-            <th class="border-b border-line px-6 py-4 font-medium bg-odd-row">No</th>
+            <th class="border-b border-line px-6 py-4 bg-odd-row text-center w-[5%]">No</th>
 
-            @foreach($columns as $col)
-                <th class="border-b border-line px-6 py-4 font-medium bg-odd-row">
-                    {{ ucfirst($col) }}
+            @foreach ($columns as $col)
+                <th class="border-b border-line px-6 py-4 bg-odd-row text-center">
+                    {{ ucwords(str_replace('_', ' ', $col)) }}
                 </th>
             @endforeach
 
-            <th class="border-b border-line px-6 py-4 font-medium bg-odd-row">Action</th>
+            <th class="border-b border-line px-6 py-4 bg-odd-row text-center w-[15%]">
+                Action
+            </th>
         </tr>
+        </thead>
 
-        @foreach($rows as $i => $row)
-        <tr class="border border-line">
-            <td class="text-center py-6 p-3">{{ $rows->firstItem() + $i }}</td>
+        <tbody>
+        @forelse ($rows as $i => $row)
+            <tr class="border-t border-line">
 
-            @foreach($columns as $col)
-                <td class="text-center">{{ $row->$col }}</td>
-            @endforeach
+                <td class="text-center py-4">
+                    {{ $rows->firstItem() + $i }}
+                </td>
 
-            <td class="text-center">
-                <button wire:click="edit({{ $row->id }})" class="text-warning underline px-3">Edit</button>
-                <button wire:click="delete({{ $row->id }})" class="text-destructive underline px-3">Delete</button>
-            </td>
-        </tr>
-        @endforeach
+                @foreach ($columns as $col)
+                    <td class="text-center py-4">
+                        {{ $row->$col }}
+                    </td>
+                @endforeach
+
+                <td class="text-center py-4 flex justify-center gap-3">
+
+                    @if ($editRoute)
+                        <a href="{{ route($editRoute, $row) }}"
+                           class="text-warning underline">
+                            Edit
+                        </a>
+                    @endif
+
+                    <form method="POST"
+                          action="{{ route('outlet.destroy', $row) }}"
+                          onsubmit="return confirm('Delete this data?')">
+                        @csrf
+                        @method('DELETE')
+                        <button class="text-destructive underline">
+                            Delete
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        @empty
+            <tr>
+                <td colspan="{{ count($columns) + 2 }}"
+                    class="text-center py-6 text-gray-500 italic">
+                    Data not found
+                </td>
+            </tr>
+        @endforelse
+        </tbody>
 
     </table>
 
-    <!-- PAGINATION -->
-    <div class="bg-odd-row border-t-0 rounded-b-lg text-black border border-line flex flex-row justify-between items-center py-3 w-full">
-        <p class="ml-5 font-medium">
-            Showing {{ $rows->firstItem() }} to {{ $rows->lastItem() }} of {{ $rows->total() }}
-        </p>
-        <div class="mr-5">
-            {{ $rows->links() }}
-        </div>
+    {{-- PAGINATION --}}
+    <div class="bg-odd-row border border-line border-t-0 rounded-b-lg px-4 py-3">
+        {{ $rows->links() }}
     </div>
 
 </div>
