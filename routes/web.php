@@ -1,52 +1,30 @@
 <?php
 
 use App\Http\Controllers\OutletController;
-use App\Http\Controllers\UserManagementController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StaffManagementController;
 use App\Http\Controllers\LaundryServiceController;
-use App\Models\Outlet;
 use Illuminate\Support\Facades\Route;
-use Livewire\Volt\Volt;
-use App\Livewire\Welcome;
-
-use App\Livewire\OutletTable;
 
 Route::view('/', 'welcome');
-Route::redirect('/', '/login');
-// Route::get('/', Welcome::class);
-// Route::view('/', 'welcome');
+// Route::redirect('/', '/login');
 
-Route::view('dashboard', 'dashboard')
+Route::get('/dashboard', fn() => view('dashboard'))
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
-Route::view('profile', 'profile')
-    ->middleware(['auth'])
-    ->name('profile');
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-
-Route::middleware(['auth'])->group(function () {
     Route::resource('outlet.services', LaundryServiceController::class);
     Route::resource('outlet', OutletController::class);
-    Route::resource('users', UserManagementController::class);
-});
-// Admin Route
-// TODO: implement middleware
-Route::prefix('admin')->name('admin')->group(function () {
-    Route::resource('users', UserManagementController::class);
+    Route::resource('staff', StaffManagementController::class);
 });
 
-// Owner Route
-Route::prefix('owner')->name('owner.')->group(function () {
-    // Route::resource('outlets', OutletManagementController::class)->only([
-    //     'index',
-    //     'store',
-    //     'update',
-    //     'show',
-    //     'destroy'
-    // ]);
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::resource('staff', StaffManagementController::class);
 });
-
-// Outlet Route (danesh) 
-// Route::view('/outlet', 'livewire.outlet.index')->name('outlet.index');
 
 require __DIR__ . '/auth.php';

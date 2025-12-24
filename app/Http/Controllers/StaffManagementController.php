@@ -6,18 +6,17 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Hash;
-use PDO;
 
-class UserManagementController extends Controller {
+class StaffManagementController extends Controller {
     public function index(Request $request) {
         $search = $request->input('search');
         $usersPaginated = User::all();
 
-        return view('pages.admin.users.index', [$usersPaginated]);
+        return view('pages.admin.staff.index', [$usersPaginated]);
     }
 
     public function create() {
-        return view('pages.admin.users.create');
+        return view('pages.admin.staff.create');
     }
 
     public function store(Request $request) {
@@ -33,12 +32,12 @@ class UserManagementController extends Controller {
             'password' => Hash::make($validated['password']),
         ]);
 
-        return to_route('pages.admin.users.index')->with('success', 'User created successfully');
+        return to_route('pages.admin.staff.index')->with('success', 'User created successfully');
     }
 
     public function edit(User $user) {
         $target_user = User::find($user);
-        return view('admin.users.edit', $target_user);
+        return view('admin.staff.edit', $target_user);
     }
 
     public function update(Request $request, User $user) {
@@ -54,7 +53,7 @@ class UserManagementController extends Controller {
             'password' => Hash::make($validated['password']),
         ]);
 
-        return to_route('pages.admin.users.index')->with('success', 'User updated successfully');
+        return to_route('pages.admin.staff.index')->with('success', 'User updated successfully');
     }
 
     public function destroy(User $user) {
