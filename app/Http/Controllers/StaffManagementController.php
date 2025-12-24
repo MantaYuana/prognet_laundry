@@ -3,61 +3,79 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\User;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Hash;
+use App\Models\Staff;
+use App\Models\Outlet;
 
 class StaffManagementController extends Controller {
-    public function index(Request $request) {
+    public function index(Outlet $outlet, Request $request) {
         $search = $request->input('search');
-        $usersPaginated = User::all();
+        $staff_paginated = $outlet->staff()->latest()->get();
 
-        return view('pages.admin.staff.index', [$usersPaginated]);
+        return view('pages.admin.staff.index', compact($staff_paginated));
     }
 
     public function create() {
-        return view('pages.admin.staff.create');
+        $outlets = Outlet::orderBy('name')->pluck('name', 'id');
+        return view('pages.admin.staff.create', compact('outlets'));
     }
 
     public function store(Request $request) {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8|confirmed',
+            'title' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
+            'phone_number' => 'required|string|max:13',
+            'outlet_id' => 'required|exists:outlets,id',
+            'user_id' => 'required|exists:users,id',
+            'role' => 'required|string|in:staff,owner,customer',
         ]);
 
-        User::create([
+        Staff::create([
             'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
-        ]);
+            'title' => $validated['title'],
+            'address' => $validated['address'],
+            'phone_number' => $validated['phone_number'],
+            'outlet_id' => $validated['outlet_id'],
+            'user_id' => $validated['user_id'],
+        ])->assignRole($validated['role']);
 
-        return to_route('pages.admin.staff.index')->with('success', 'User created successfully');
+        return to_route('pages.admin.staff.index')->with('success', 'Staff created successfully');
     }
 
-    public function edit(User $user) {
-        $target_user = User::find($user);
-        return view('admin.staff.edit', $target_user);
+    public function edit(Staff $staff) {
+        $target_staff = Staff::find($staff);
+        $outlets = Outlet::orderBy('name')->pluck('name', 'id');
+        return view('admin.staff.edit', compact('target_staff', 'outlets'));
     }
 
-    public function update(Request $request, User $user) {
+    public function update(Request $request, Staff $staff) {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8|confirmed',
+            'title' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
+            'phone_number' => 'required|string|max:13',
+            'outlet_id' => 'required|exists:outlets,id',
+            'user_id' => 'required|exists:users,id',
+            'role' => 'required|string|in:staff,owner,customer',
         ]);
 
-        $user->update([
+        $staff->update([
             'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
+            'title' => $validated['title'],
+            'address' => $validated['address'],
+            'phone_number' => $validated['phone_number'],
+            'outlet_id' => $validated['outlet_id'],
+            'user_id' => $validated['user_id'],
         ]);
+        $staff->revokePermissionTo($validated['role']);
 
-        return to_route('pages.admin.staff.index')->with('success', 'User updated successfully');
+        return to_route('pages.admin.staff.index')->with('success', 'Staff updated successfully');
     }
 
-    public function destroy(User $user) {
-        $target_user = User::find($user);
-        $target_user->delete();
+    public function destroy(Staff $staff) {
+        $target_staff = Staff::find($staff);
+        $target_staff->delete();
+
+        return redirect()->route('pages.admin.staff.index')->with('success', 'Staff deleted successfully');
     }
 }

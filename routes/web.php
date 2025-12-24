@@ -21,11 +21,12 @@ Route::middleware('auth')->group(function () {
     Route::resource('outlet.services', LaundryServiceController::class);
     Route::resource('outlet', OutletController::class);
     Route::resource('staff', StaffManagementController::class);
-    
 });
 
-Route::prefix('admin')->name('admin.')->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->group(function () {
     Route::resource('staff', StaffManagementController::class);
+    Route::resource('outlet.services', LaundryServiceController::class);
+    Route::resource('outlet', OutletController::class);
 });
 
 require __DIR__ . '/auth.php';

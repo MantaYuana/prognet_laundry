@@ -5,14 +5,15 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Outlet;
+use App\Models\User;
 
 
-Auth::loginUsingId(1); // login paksa sebagai user id 1
+// Auth::loginUsingId(1); // login paksa sebagai user id 1
 
-// use App\Models\User;
 
 class OutletController extends Controller
 {
+    // FIXME: we need to start using this
     // public function index(Request $request)
     // {
     //     $search = $request->input('search');
@@ -42,13 +43,15 @@ class OutletController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'address' => 'required|string|max:255',
-            'phone_number' => 'required|string|min:5',
+            'phone_number' => 'required|string|min:5|max:13',
+            'user_id' => 'required|exists:users,id',
         ]);
 
         Outlet::create([
             'name' => $validated['name'],
             'address' => $validated['address'],
             'phone_number' => $validated['phone_number'],
+            'user_id' => $validated['user_id'],
         ]);
 
         return to_route('pages.outlet.index')->with('success', 'Outlet created successfully');
@@ -65,13 +68,15 @@ class OutletController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'address' => 'required|string|max:255',
-            'phone_number' => 'required|string|min:5',
+            'phone_number' => 'required|string|min:5|max:13',
+            'user_id' => 'required|exists:users,id',
         ]);
 
         $outlet->update([
             'name' => $validated['name'],
             'address' => $validated['address'],
             'phone_number' => $validated['phone_number'],
+            'user_id' => $validated['user_id'],
         ]);
 
         return to_route('pages.outlet.index')->with('success', 'Outlet updated successfully');

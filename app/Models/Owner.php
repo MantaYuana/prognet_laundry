@@ -6,25 +6,20 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Outlet extends Model {
+class Owner extends Model {
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'name',
         'address',
         'phone_number',
-        'user_id'
     ];
 
-    public function owner() {
-        return $this->belongsTo(Owner::class);
+    public function owner_of() {
+        return $this->hasMany(Outlet::class);
     }
 
-    public function staff() {
-        return $this->hasMany(Staff::class);
-    }
-
-    public function services() {
-        return $this->hasMany(LaundryService::class);
+    public function profile_of() {
+        return $this->belongsTo(User::class);
     }
 }
