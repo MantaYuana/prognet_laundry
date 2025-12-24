@@ -13,10 +13,10 @@ class OutletController extends Controller
     {
         $search = $request->input('search');
         $user = User::find(Auth::id());
-        $usersPaginated = $user->outlets;
+        $outletPaginated = $user->outlets;
 
         // return view('pages.outlet.index', [$usersPaginated]);
-        return view('pages.outlet.index', compact('usersPaginated'));
+        return view('pages.outlet.index', compact('outletPaginated'));
     }
 
     public function create()
@@ -44,7 +44,7 @@ class OutletController extends Controller
     public function edit(Outlet $outlet)
     {
         $target_outlet = Outlet::find($outlet);
-        return view('outlet.edit', compact('outlet'));
+        return view('pages.outlet.edit', compact('outlet'));
     }
 
     public function update(Request $request, Outlet $outlet)

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\OutletController;
 use App\Http\Controllers\UserManagementController;
+use App\Http\Controllers\LaundryServiceController;
 use App\Models\Outlet;
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
@@ -22,8 +23,12 @@ Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');
 
-Route::resource('outlet', OutletController::class);
-Route::resource('users', UserManagementController::class);
+
+Route::middleware(['auth'])->group(function () {
+    Route::resource('outlet.services', LaundryServiceController::class);
+    Route::resource('outlet', OutletController::class);
+    Route::resource('users', UserManagementController::class);
+});
 // Admin Route
 // TODO: implement middleware
 Route::prefix('admin')->name('admin')->group(function () {

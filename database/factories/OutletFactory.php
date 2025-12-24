@@ -15,9 +15,9 @@ class OutletFactory extends Factory {
      */
     public function definition(): array {
         return [
-            'name'   => $this->faker->company(),
-            'address' => $this->faker->address(),
-            'phone_number' => $this->faker->phoneNumber(),
+            'name'   => fake()->company(),
+            'address' => fake()->address(),
+            'phone_number' => fake()->phoneNumber(),
             'user_id' => 1,
         ];
     }
