@@ -29,7 +29,7 @@ new #[Layout('layouts.guest'), Title('Luxe - Login')] class extends Component {
 
     <section class="login-form-section flex flex-col justify-center items-center p-10 w-full lg:w-1/2 bg-surface">
         <div class="text-center mb-8">
-            <h1 class="logo text-4xl font-serif font-bold italic text-primary mb-1">Luxe</h1>
+            <h1 class="logo text-4xl font-serif font-bold italic text-primary mb-1">Yuhu</h1>
             <p class="subtitle text-sm text-gray-500">Dashboard Login</p>
         </div>
 
