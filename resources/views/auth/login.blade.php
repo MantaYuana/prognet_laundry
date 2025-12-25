@@ -69,12 +69,10 @@
                     </div>
 
                     <!-- Action -->
-                    <button
-                        type="submit"
-                        class="w-full py-2 mt-6 text-sm font-semibold text-white transition rounded-md shadow-md bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                    <x-primary-button class="justify-center w-full py-2 mt-6 text-sm">
                         Log in
-                    </button>
-
+                    </x-primary-button>
+                        
                     <!-- Forgot -->
                     @if (Route::has('password.request'))
                         <div class="mt-4 text-center">
