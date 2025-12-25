@@ -32,7 +32,7 @@ class OutletController extends Controller {
 
     public function store(Request $request) {
         $owner = Owner::where('user_id', Auth::id())->firstOrFail();
-        dd($owner);
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'address' => 'required|string|max:255',
@@ -45,21 +45,15 @@ class OutletController extends Controller {
             'phone_number' => $validated['phone_number'],
         ]);
 
-        return to_route('pages.outlet.index')->with('success', 'Outlet created successfully');
+        return to_route('outlet.index')->with('success', 'Outlet created successfully');
     }
 
     public function edit(Outlet $outlet) {
-        $owner = Owner::where('user_id', Auth::id())->firstOrFail();
-        abort_if($outlet->owner_id !== $owner->id, 403);
-
         $target_outlet = Outlet::find($outlet);
         return view('pages.outlet.edit', compact('outlet'));
     }
 
     public function update(Request $request, Outlet $outlet) {
-        $owner = Owner::where('user_id', Auth::id())->firstOrFail();
-        abort_if($outlet->owner_id !== $owner->id, 403);
-
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'address' => 'required|string|max:255',
@@ -75,16 +69,8 @@ class OutletController extends Controller {
         return to_route('outlet.index')->with('success', 'Outlet updated successfully');
     }
 
-    // public function destroy(Outlet $outlet)
-    // {
-    //     $target_outlet = Outlet::find($outlet);
-    //     $target_outlet->delete();
-    // }
-
-    public function destroy(Outlet $outlet)
-    {
-        $target_outlet = Outlet::find($outlet);
-        $target_outlet->delete();
+    public function destroy(Outlet $outlet) {
+        $outlet->delete();
 
         return redirect()
             ->route('outlet.index')

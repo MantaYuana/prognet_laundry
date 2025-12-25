@@ -17,16 +17,18 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-    Route::resource('outlet.services', LaundryServiceController::class);
-    Route::resource('outlet', OutletController::class);
-    Route::resource('staff', StaffManagementController::class);
 });
 
-Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->group(function () {
+Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::resource('staff', StaffManagementController::class);
     Route::resource('outlet.services', LaundryServiceController::class);
     Route::resource('outlet', OutletController::class);
+});
+
+Route::middleware(['auth', 'role:owner', 'owner'])->group(function () {
+    Route::resource('outlet', OutletController::class);
+    Route::resource('outlet.services', LaundryServiceController::class);
+    Route::resource('staff', StaffManagementController::class);
 });
 
 require __DIR__ . '/auth.php';
