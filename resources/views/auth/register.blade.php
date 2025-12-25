@@ -80,11 +80,9 @@
                 </div>
 
                 <!-- Button -->
-                <button
-                    type="submit"
-                    class="w-full py-2 mt-2 text-sm font-semibold text-white transition rounded-md bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                <x-primary-button class="justify-center w-full py-2 mt-2 text-sm">
                     Register
-                </button>
+                </x-primary-button>
             </form>
 
             <!-- Login link -->
