@@ -8,28 +8,34 @@
         </div>
     @endif
 
-    <form wire:submit.prevent="save" class="space-y-4">
+    <form
+        method="POST"
+        action="{{ $action }}"
+        class="space-y-4"
+    >
+        @csrf
 
-        @foreach($fields as $name => $type)
+        @foreach ($fields as $name => $type)
             <div>
                 <label class="block mb-1 font-medium">
                     {{ ucfirst(str_replace('_', ' ', $name)) }}
                 </label>
 
-                @if($type === 'textarea')
+                @if ($type === 'textarea')
                     <textarea
-                        wire:model.defer="form.{{ $name }}"
+                        name="{{ $name }}"
                         class="w-full border border-line rounded-md px-3 py-2"
-                    ></textarea>
+                    >{{ old($name) }}</textarea>
                 @else
                     <input
                         type="{{ $type }}"
-                        wire:model.defer="form.{{ $name }}"
+                        name="{{ $name }}"
+                        value="{{ old($name) }}"
                         class="w-full border border-line rounded-md px-3 py-2"
                     />
                 @endif
 
-                @error("form.$name")
+                @error($name)
                     <span class="text-red-500 text-sm">{{ $message }}</span>
                 @enderror
             </div>
@@ -38,15 +44,15 @@
         <div class="flex gap-3 pt-4">
             <button
                 type="submit"
-                class="bg-primary text-white px-4 py-2 rounded-md cursor-pointer hover:opacity-80"
+                class="bg-primary hover:opacity-80 text-white px-4 py-2 rounded-md"
             >
-                + Create
+                Save
             </button>
 
-            @if($redirectRoute)
+            @if ($redirectRoute)
                 <a
                     href="{{ route($redirectRoute) }}"
-                    class="px-4 py-2 border rounded-md cursor-pointer border-line hover:opacity-80"
+                    class="px-4 py-2 border hover:opacity-80 border-line rounded-md"
                 >
                     Cancel
                 </a>

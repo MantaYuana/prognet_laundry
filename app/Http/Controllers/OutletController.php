@@ -72,11 +72,22 @@ class OutletController extends Controller {
             'phone_number' => $validated['phone_number'],
         ]);
 
-        return to_route('pages.outlet.index')->with('success', 'Outlet updated successfully');
+        return to_route('outlet.index')->with('success', 'Outlet updated successfully');
     }
 
-    public function destroy(Outlet $outlet) {
+    // public function destroy(Outlet $outlet)
+    // {
+    //     $target_outlet = Outlet::find($outlet);
+    //     $target_outlet->delete();
+    // }
+
+    public function destroy(Outlet $outlet)
+    {
         $target_outlet = Outlet::find($outlet);
         $target_outlet->delete();
+
+        return redirect()
+            ->route('outlet.index')
+            ->with('success', 'Outlet berhasil dihapus');
     }
 }
