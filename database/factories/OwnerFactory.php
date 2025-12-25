@@ -3,12 +3,12 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\Owner;
+use App\Models\User;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Outlet>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Owner>
  */
-class OutletFactory extends Factory {
+class OwnerFactory extends Factory {
     /**
      * Define the model's default state.
      *
@@ -16,10 +16,9 @@ class OutletFactory extends Factory {
      */
     public function definition(): array {
         return [
-            'name'   => fake()->company(),
             'address' => fake()->address(),
             'phone_number' => fake()->phoneNumber(),
-            'owner_id' => Owner::factory(),
+            'user_id' => User::factory(),
         ];
     }
 }

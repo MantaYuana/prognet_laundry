@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use App\Models\Outlet;
+use App\Models\Owner;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -42,6 +43,31 @@ class DatabaseSeeder extends Seeder {
                 'remember_token' => Str::random(10),
             ],
         )->assignRole($ownerRole);
+
+        Owner::firstOrCreate(
+            [
+                'address' => 'Tukad Balian',
+                'phone_number' => '089643471945',
+                'user_id' => 2,
+            ],
+        );
+
+        Owner::firstOrCreate(
+            [
+                'address' => 'Admin Address',
+                'phone_number' => '089643471945',
+                'user_id' => 1,
+            ],
+        );
+
+        Outlet::firstOrCreate(
+            [
+                'name' => 'Outlet 1',
+                'address' => 'Tukad Balian',
+                'phone_number' => '089643471945',
+                'owner_id' => 1,
+            ],
+        );
 
         User::factory(10)->create();
         Outlet::factory(10)->create();

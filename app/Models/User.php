@@ -48,7 +48,16 @@ class User extends Authenticatable
         ];
     }
 
+    public function owner() {
+        return $this->hasOne(Owner::class);
+    }
+
     public function outlets() {
-        return $this->hasMany(Outlet::class);
+        return $this->hasManyThrough(
+            Outlet::class,
+            Owner::class,
+            'user_id',
+            'owner_id'
+        );
     }
 }

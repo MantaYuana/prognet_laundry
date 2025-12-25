@@ -13,7 +13,7 @@ class Outlet extends Model {
         'name',
         'address',
         'phone_number',
-        'user_id'
+        'owner_id'
     ];
 
     public function owner() {

@@ -13,13 +13,14 @@ class Owner extends Model {
         'name',
         'address',
         'phone_number',
+        'user_id'
     ];
 
-    public function owner_of() {
+    public function outlets() {
         return $this->hasMany(Outlet::class);
     }
 
-    public function profile_of() {
+    public function user() {
         return $this->belongsTo(User::class);
     }
 }
