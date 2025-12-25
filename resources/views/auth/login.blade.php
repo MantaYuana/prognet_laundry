@@ -1,47 +1,126 @@
 <x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+    <div class="flex items-center justify-center min-h-screen bg-gray-100">
+        <div
+            class="flex w-full max-w-4xl overflow-hidden bg-white rounded-xl shadow-xl
+                   min-h-[520px]">
 
-    <form method="POST" action="{{ route('login') }}">
-        @csrf
+            <!-- LEFT : FORM -->
+            <section
+                class="flex flex-col justify-center w-full px-10 py-8 lg:w-1/2 bg-surface">
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
+                <!-- Session Status -->
+                <x-auth-session-status class="mb-4" :status="session('status')" />
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
+                <!-- Logo -->
+                <div class="mb-6 text-center">
+                    <h1 class="mb-1 font-serif text-4xl italic font-bold text-primary">
+                        Luxe
+                    </h1>
+                    <p class="text-sm text-gray-500">
+                        Dashboard Login
+                    </p>
+                </div>
 
-            <x-text-input id="password" class="block mt-1 w-full"
+                <form method="POST" action="{{ route('login') }}" class="w-full max-w-sm mx-auto">
+                    @csrf
+
+                    <!-- Email -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">
+                            Email
+                        </label>
+                        <input
+                            type="email"
+                            name="email"
+                            value="{{ old('email') }}"
+                            required
+                            autofocus
+                            autocomplete="username"
+                            placeholder="Enter your email"
+                            class="block w-full px-3 py-2 mt-1 text-sm border rounded-md border-line focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary">
+                        <x-input-error :messages="$errors->get('email')" class="mt-1" />
+                    </div>
+
+                    <!-- Password -->
+                    <div class="mt-4">
+                        <label class="block text-sm font-medium text-gray-700">
+                            Password
+                        </label>
+                        <input
                             type="password"
                             name="password"
-                            required autocomplete="current-password" />
+                            required
+                            autocomplete="current-password"
+                            placeholder="Enter your password"
+                            class="block w-full px-3 py-2 mt-1 text-sm border rounded-md border-line focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary">
+                        <x-input-error :messages="$errors->get('password')" class="mt-1" />
+                    </div>
 
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
+                    <!-- Remember -->
+                    <div class="flex items-center mt-4">
+                        <input
+                            id="remember_me"
+                            type="checkbox"
+                            name="remember"
+                            class="border-gray-300 rounded text-primary focus:ring-primary">
+                        <label for="remember_me" class="ml-2 text-sm text-gray-600">
+                            Remember me
+                        </label>
+                    </div>
 
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500" name="remember">
-                <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
-            </label>
-        </div>
+                    <!-- Action -->
+                    <button
+                        type="submit"
+                        class="w-full py-2 mt-6 text-sm font-semibold text-white transition rounded-md shadow-md bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                        Log in
+                    </button>
 
-        <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
+                    <!-- Forgot -->
+                    @if (Route::has('password.request'))
+                        <div class="mt-4 text-center">
+                            <a
+                                href="{{ route('password.request') }}"
+                                class="text-sm text-gray-500 hover:underline">
+                                Forgot your password?
+                            </a>
+                        </div>
+                    @endif
+                </form>
+
+                <!-- Register -->
+                <div class="mt-4 text-xs text-center text-gray-600">
+                    No Account?
+                    <a href="{{ route('register') }}"
+                       class="font-medium text-primary hover:underline">
+                        Register Here
+                    </a>
+                </div>
+
+                <!-- Divider -->
+                <div class="flex items-center w-full max-w-xs mx-auto my-6">
+                    <div class="flex-1 border-t border-line"></div>
+                    <span class="mx-4 text-xs text-gray-400">OR</span>
+                    <div class="flex-1 border-t border-line"></div>
+                </div>
+
+                <!-- Google -->
+                <a
+                    href="#"
+                    class="flex items-center justify-center w-full max-w-xs py-2 mx-auto text-sm font-medium text-gray-700 transition bg-white border rounded-md shadow-sm border-line hover:bg-gray-50">
+                    <img
+                        src="{{ asset('images/logogoogle.webp') }}"
+                        class="w-5 h-5 mr-2">
+                    Login with Google
                 </a>
-            @endif
+            </section>
 
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
-            </x-primary-button>
+            <!-- RIGHT : IMAGE -->
+            <section class="hidden lg:block lg:w-1/2">
+                <img
+                    src="{{ asset('images/loginpageimage.jpeg') }}"
+                    class="object-cover w-full h-full"
+                    alt="Login Image">
+            </section>
         </div>
-    </form>
+    </div>
 </x-guest-layout>
