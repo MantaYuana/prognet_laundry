@@ -19,16 +19,17 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::resource('staff', StaffManagementController::class);
-    Route::resource('outlet.services', LaundryServiceController::class);
-    Route::resource('outlet', OutletController::class);
-});
+// NOTE: yes, for now admin is useless, but dont worry it wont be for long
+// Route::middleware(['auth', 'role:admin'])->group(function () {
+//     Route::resource('staff', StaffManagementController::class);
+//     Route::resource('outlet.services', LaundryServiceController::class);
+//     Route::resource('outlet', OutletController::class);
+// });
 
 Route::middleware(['auth', 'role:owner', 'owner'])->group(function () {
     Route::resource('outlet', OutletController::class);
     Route::resource('outlet.services', LaundryServiceController::class);
-    Route::resource('staff', StaffManagementController::class);
+    Route::resource('outlet.staff', StaffManagementController::class);
 });
 
 require __DIR__ . '/auth.php';

@@ -10,7 +10,7 @@ use App\Models\Owner;
 
 class OutletController extends Controller {
     public function index(Request $request) {
-        $owner = Owner::where('user_id', Auth::id())->firstOrFail();;
+        $owner = Owner::where('user_id', Auth::id())->firstOrFail();
         $search = $request->string('search');
 
         $outletPaginated = $owner->outlets()
