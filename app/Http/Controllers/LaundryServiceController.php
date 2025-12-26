@@ -9,8 +9,13 @@ use App\Models\Outlet;
 class LaundryServiceController extends Controller {
     public function index(Outlet $outlet, Request $request) {
         $search = $request->input('search');
-        $laundry_service_paginated = $outlet->services()->latest()->get();
+        $laundry_service_paginated = $outlet->services()
+        ->when($search, fn ($q) => $q->where('name', 'like', "%{$search}%"))
+        ->orderBy('name')
+        ->paginate(5)
+        ->withQueryString();
 
+        // $laundry_service_paginated = $outlet->services()->latest()->get();
         return view('pages.outlet.services.index', compact('outlet', 'laundry_service_paginated'));
     }
 
@@ -32,7 +37,7 @@ class LaundryServiceController extends Controller {
             'price' => $validated['price'],
         ]);
 
-        return to_route('pages.outlet.services.index')->with('success', 'Laundry Service created successfully');
+        return to_route('outlet.services.index')->with('success', 'Laundry Service created successfully');
     }
 
     public function edit(Outlet $outlet, LaundryService $laundry_service) {
@@ -55,7 +60,7 @@ class LaundryServiceController extends Controller {
             'price' => $validated['price'],
         ]);
 
-        return to_route('pages.outlet.services.index')->with('success', 'Laundry Service updated successfully');
+        return to_route('outlet.services.index')->with('success', 'Laundry Service updated successfully');
     }
 
     public function destroy(LaundryService $laundry_service) {
