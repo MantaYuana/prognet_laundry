@@ -12,6 +12,7 @@ class CrudTable extends Component
     public string $title;
     public ?string $createRoute;
     public ?string $editRoute;
+    public ?string $deleteRoute;
     public array $routeParams;
     public ?string $rowParamKey;
 
@@ -19,8 +20,9 @@ class CrudTable extends Component
         LengthAwarePaginator $rows,
         array $columns,
         string $title = '',
-        string $createRoute = null,
-        string $editRoute = null,
+        ?string $createRoute,
+        ?string $editRoute,
+        ?string $deleteRoute, 
         array $routeParams = [],
         ?string $rowParamKey = null
     ) {
@@ -29,6 +31,7 @@ class CrudTable extends Component
         $this->title = $title;
         $this->createRoute = $createRoute;
         $this->editRoute = $editRoute;
+        $this->deleteRoute = $deleteRoute;
         $this->routeParams = $routeParams;
         $this->rowParamKey = $rowParamKey;
     }

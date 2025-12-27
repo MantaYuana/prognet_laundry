@@ -16,7 +16,7 @@ class LaundryService extends Model {
         'price',
     ];
 
-    public function service_of() {
+    public function outlet() {
         return $this->belongsTo(Outlet::class);
     }
 }

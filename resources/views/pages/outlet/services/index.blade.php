@@ -7,6 +7,7 @@
                 title="Outlet Services"
                 createRoute="outlet.services.create"
                 editRoute="outlet.services.edit"
+                deleteRoute="outlet.services.destroy"
                 :routeParams="['outlet' => $outlet]"
                 rowParamKey="service"
             />

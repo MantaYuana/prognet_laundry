@@ -26,6 +26,10 @@ class OutletController extends Controller {
         return view('pages.outlet.index', compact('outletPaginated'));
     }
 
+    public function show(Outlet $outlet) {
+        return view('pages.outlet.show', compact('outlet'));
+    }
+
     public function create() {
         return view('pages.outlet.create');
     }
@@ -49,7 +53,6 @@ class OutletController extends Controller {
     }
 
     public function edit(Outlet $outlet) {
-        $target_outlet = Outlet::find($outlet);
         return view('pages.outlet.edit', compact('outlet'));
     }
 

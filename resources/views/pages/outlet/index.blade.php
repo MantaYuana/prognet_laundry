@@ -6,6 +6,7 @@
             title="Outlet"
             createRoute="outlet.create"
             editRoute="outlet.edit"
+            deleteRoute="outlet.destroy"
             rowParamKey="outlet"
         />
 

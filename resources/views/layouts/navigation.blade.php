@@ -15,6 +15,18 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    @if(Auth::user()->hasRole('owner'))
+                    <x-nav-link :href="route('outlet.index')" :active="request()->routeIs('outlet.*') && !request()->routeIs('outlet.services.*')">
+                        {{ __('Outlet') }}
+                    </x-nav-link>
+                    @if($currentOutlet)
+                    <x-nav-link
+                        :href="route('outlet.services.index', ['outlet' => $currentOutlet->id])"
+                        :active="request()->routeIs('outlet.services.*')">
+                        {{ __('Services') }}
+                    </x-nav-link>
+                    @endif
+                    @endif
                 </div>
             </div>
 
@@ -87,6 +99,11 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+            @if(Auth::user()->hasRole('owner'))
+            <x-responsive-nav-link :href="route('outlet.index')" :active="request()->routeIs('outlet.*')">
+                {{ __('Outlet') }}
+            </x-responsive-nav-link>
+            @endif
         </div>
 
         <!-- Responsive Settings Options -->

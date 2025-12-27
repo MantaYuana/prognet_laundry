@@ -54,7 +54,7 @@
 
             @if ($redirectRoute)
                 <a
-                    href="{{ route($redirectRoute) }}"
+                    href="{{ route($redirectRoute, $model) }}"
                     class="px-4 py-2 border hover:opacity-80 border-line rounded-md"
                 >
                     Cancel

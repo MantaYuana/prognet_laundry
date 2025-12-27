@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\Owner;
+use App\Models\Outlet;
 
 class EnsuerOwner {
     /**
@@ -22,7 +23,11 @@ class EnsuerOwner {
         $request->attributes->set('owner', $owner);
 
         if ($request->route('outlet')) {
-            $outlet = $request->route('outlet');
+            $outletParam = $request->route('outlet');
+            $outlet = $outletParam instanceof Outlet
+                ? $outletParam
+                : Outlet::findOrFail($outletParam);
+                
             if ($outlet->owner_id !== $owner->id) {
                 abort(403, 'You do not own this outlet');
             }

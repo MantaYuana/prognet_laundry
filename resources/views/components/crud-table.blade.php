@@ -71,9 +71,11 @@
 
                         @php
                             $editParams = $routeParams;
+                            $deleteParams = $routeParams;
 
                             if ($rowParamKey) {
-                                $editParams[$rowParamKey] = $row->id;
+                                $editParams[$rowParamKey] = $row;
+                                $deleteParams[$rowParamKey] = $row;
                             }
                         @endphp
 
@@ -82,8 +84,7 @@
                                 Edit
                             </a>
                         @endif
-
-                        <form method="POST" action="{{ route('outlet.destroy', $row) }}"
+                        <form method="POST" action="{{ route($deleteRoute, $deleteParams) }}"
                             onsubmit="return confirm('Delete this data?')">
                             @csrf
                             @method('DELETE')
