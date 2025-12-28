@@ -80,9 +80,11 @@
                 </div>
 
                 <!-- Button -->
-                <x-primary-button class="justify-center w-full py-2 mt-2 text-sm">
-                    Register
+                <x-primary-button
+                            class="w-full mt-6 text-sm font-medium normal-case transition-all duration-200 rounded-lg shadow-lg btn btn-primary hover:shadow-xl hover:brightness-110 active:scale-95">
+                             Register
                 </x-primary-button>
+
             </form>
 
             <!-- Login link -->

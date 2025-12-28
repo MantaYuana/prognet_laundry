@@ -41,9 +41,10 @@
                 </div>
 
                 <!-- Action -->
-                <x-primary-button class="justify-center w-full py-2 text-sm">
+                <x-primary-button
+                    class="grid w-full max-w-sm mx-auto mt-6 text-sm font-medium normal-case transition-all duration-200 rounded-lg shadow-lg btn btn-primary h-11 place-items-center hover:shadow-xl hover:brightness-110 active:scale-95">
                     {{ __('Send Reset Link') }}
-                </x-primary-button>
+                    </x-primary-button>
             </form>
 
             <!-- Back to Login -->

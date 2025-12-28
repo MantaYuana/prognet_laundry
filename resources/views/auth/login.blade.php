@@ -69,8 +69,9 @@
                     </div>
 
                     <!-- Action -->
-                    <x-primary-button class="justify-center w-full py-2 mt-6 text-sm">
-                        Log in
+                    <x-primary-button
+                    class="w-full mt-6 text-sm font-medium normal-case transition-all duration-200 rounded-lg shadow-lg btn btn-primary hover:shadow-xl hover:brightness-110 active:scale-95">
+                    Log in
                     </x-primary-button>
                         
                     <!-- Forgot -->
@@ -104,11 +105,14 @@
                 <!-- Google -->
                 <a
                     href="#"
-                    class="flex items-center justify-center w-full max-w-xs py-2 mx-auto text-sm font-medium text-gray-700 transition bg-white border rounded-md shadow-sm border-line hover:bg-gray-50">
+                     class="grid w-full max-w-sm grid-flow-col gap-3 mx-auto text-sm font-medium normal-case transition-all duration-200 rounded-lg shadow-lg btn btn-outline h-11 auto-cols-max place-content-center place-items-center border-line hover:shadow-xl hover:bg-gray-50 active:scale-95">
                     <img
-                        src="{{ asset('images/logogoogle.webp') }}"
-                        class="w-5 h-5 mr-2">
-                    Login with Google
+                         src="{{ asset('images/logogoogle.webp') }}"
+                        alt="Google"
+                        class="block w-5 h-5">
+                        <span class="leading-none">
+                            Login with Google
+                    </span>
                 </a>
             </section>
 

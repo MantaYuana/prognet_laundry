@@ -12,7 +12,10 @@
     <x-danger-button
         x-data=""
         x-on:click.prevent="$dispatch('open-modal', 'confirm-user-deletion')"
-    >{{ __('Delete Account') }}</x-danger-button>
+        class="text-sm font-medium normal-case transition-all duration-200 rounded-lg shadow-lg btn btn-error hover:shadow-xl hover:brightness-110 active:scale-95"
+    >
+        {{ __('Delete Account') }}
+    </x-danger-button>
 
     <x-modal name="confirm-user-deletion" :show="$errors->userDeletion->isNotEmpty()" focusable>
         <form method="post" action="{{ route('profile.destroy') }}" class="p-6">
@@ -34,19 +37,24 @@
                     id="password"
                     name="password"
                     type="password"
-                    class="mt-1 block w-3/4"
+                    class="block w-3/4 mt-1"
                     placeholder="{{ __('Password') }}"
                 />
 
                 <x-input-error :messages="$errors->userDeletion->get('password')" class="mt-2" />
             </div>
 
-            <div class="mt-6 flex justify-end">
-                <x-secondary-button x-on:click="$dispatch('close')">
+            <div class="flex justify-end mt-6">
+                <x-secondary-button 
+                    x-on:click="$dispatch('close')"
+                    class="text-sm font-medium normal-case transition-all duration-200 rounded-lg shadow btn btn-ghost hover:bg-gray-100 active:scale-95"
+                >
                     {{ __('Cancel') }}
                 </x-secondary-button>
 
-                <x-danger-button class="ms-3">
+                <x-danger-button 
+                    class="text-sm font-medium normal-case transition-all duration-200 rounded-lg shadow-lg ms-3 btn btn-error hover:shadow-xl hover:brightness-110 active:scale-95"
+                >
                     {{ __('Delete Account') }}
                 </x-danger-button>
             </div>
