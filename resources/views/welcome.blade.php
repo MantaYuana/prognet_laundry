@@ -25,12 +25,14 @@
                 </div>
                 
                 <div class="hidden md:flex space-x-4 items-center">
-                    <a href="{{ url('/register') }}" class="px-5 py-2.5 text-gray-600 hover:text-primary font-medium transition duration-150">
-                        Register
-                    </a>
-                    <a href="{{ url('/login') }}" class="px-5 py-2.5 bg-primary text-white font-semibold rounded-md shadow-md hover:bg-primary-dark transition duration-150 ease-in-out">
-                        Login
-                    </a>
+                    @if (Route::has('login'))
+                        <div class="flex gap-4 justify-end">
+                            <a href="{{ route('login') }}" class="font-semibold">Log in</a>
+                        @if (Route::has('register'))
+                            <a href="{{ route('register') }}" class="font-semibold">Register</a>
+                        @endif
+                        </div>
+                    @endif
                 </div>
 
                 <div class="md:hidden flex items-center">
