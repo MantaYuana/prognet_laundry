@@ -48,7 +48,7 @@
         
         <div class="absolute inset-y-0 left-0 w-full lg:w-7/12 z-0 pointer-events-none overflow-hidden">
             <img 
-                src="{{ asset('images/setrika.png') }}" 
+                src="{{ asset('images/setrika.webp') }}" 
                 alt="Background Watermark" 
                 class="w-full h-full object-cover object-left-bottom opacity-10 grayscale"
             >
