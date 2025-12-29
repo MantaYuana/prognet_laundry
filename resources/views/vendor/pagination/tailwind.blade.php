@@ -1,7 +1,7 @@
 <div class="flex items-center justify-between">
 
     {{-- SHOWING INFO --}}
-    <p class="text-sm text-gray-600">
+    <!-- <p class="text-sm text-gray-600 mr-4">
         @if ($paginator->total() > 0)
             Showing
             <span class="font-medium">{{ $paginator->firstItem() ?? 1 }}</span>
@@ -13,7 +13,7 @@
         @else
             Showing 0 results
         @endif
-    </p>
+    </p> -->
 
     {{-- PAGINATION BUTTONS --}}
     <div class="flex items-center gap-2">
