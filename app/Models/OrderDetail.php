@@ -9,6 +9,7 @@ class OrderDetail extends Model {
 
     protected $fillable = [
         'quantity',
+        'item_price',
         'subtotal',
         'laundry_service_id',
         'order_id',

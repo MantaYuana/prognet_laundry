@@ -34,11 +34,12 @@ Route::middleware(['auth', 'role:owner', 'owner'])->group(function () {
     Route::resource('outlet.staff.order', StaffOrderController::class);
 });
 
-Route::middleware(['auth', 'role:staff'])->group(function () {
-    Route::resource('outlet', OutletController::class);
-    Route::resource('outlet.services', LaundryServiceController::class);
-    Route::resource('outlet.staff', StaffManagementController::class);
-    Route::resource('outlet.staff.order', StaffOrderController::class);
+Route::middleware(['auth', 'role:staff', 'staff'])->group(function () {
+    Route::get('staff/orders', [StaffOrderController::class, 'index'])->name('staff.orders.index');
+    Route::get('staff/orders/create', [StaffOrderController::class, 'create'])->name('staff.orders.create');
+    Route::post('staff/orders', [StaffOrderController::class, 'store'])->name('staff.orders.store');
+    Route::get('staff/orders/{order}', [StaffOrderController::class, 'show'])->name('staff.orders.show');
+    Route::patch('staff/orders/{order}', [StaffOrderController::class, 'update'])->name('staff.orders.update');
 });
 
 require __DIR__ . '/auth.php';

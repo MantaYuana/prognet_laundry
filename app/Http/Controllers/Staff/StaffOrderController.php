@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\LaundryService;
 use Illuminate\Support\Str;
+use App\Services\OrderService;
 
 class StaffOrderController extends Controller {
     public function index() {
@@ -28,7 +29,7 @@ class StaffOrderController extends Controller {
         return view('pages.outlet.order.staff.create');
     }
 
-    public function store(Request $request) {
+    public function store(Request $request, OrderService $orderService) {
         $data = $request->validate([
             'customer_id' => 'nullable|exists:customers,id',
             'outlet_id' => 'required|exists:outlets,id',
@@ -38,40 +39,10 @@ class StaffOrderController extends Controller {
             'items.*.quantity' => 'required|integer|min:1',
         ]);
 
-        $order = Order::create([
-            'code' => 'ORD-' . Str::upper(Str::random(8)),
-            'status' => 'ordered',
-            'payment_confirm' => false,
-            'address' => $data['address'] ?? '',
-            'customer_id' => $data['customer_id'] ?? null,
-            'outlet_id' => $data['outlet_id'],
-            'staff_id' => $request->user()->id ?? null,
-            'total' => 0,
-        ]);
-
-        $total = 0;
-        foreach ($data['items'] as $item) {
-            $service = LaundryService::findOrFail($item['laundry_service_id']);
-            $unit = $service->price;
-            $qty = $item['quantity'];
-            $subtotal = $unit * $qty;
-
-            OrderDetail::create([
-                'order_id' => $order->id,
-                'laundry_service_id' => $service->id,
-                'quantity' => $qty,
-                'unit_price' => $unit,
-                'subtotal' => $subtotal,
-            ]);
-
-            $total += $subtotal;
-            $order->update(['total' => $total]);
-
-            return $order->load('items.laundryService');
-        };
+        $orderService->create($data, $request->user()->id ?? null);
 
         return redirect()
-            ->route('outlet.staff.order.index', $order)
+            ->route('outlet.staff.order.index')
             ->with('success', 'Order created');
     }
 
