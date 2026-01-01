@@ -33,7 +33,7 @@ class OrderService
                 $order->items()->create([
                     'laundry_service_id' => $service->id,
                     'quantity' => $qty,
-                    'unit_price' => $unit,
+                    'item_price' => $unit,
                     'subtotal' => $subtotal,
                 ]);
 

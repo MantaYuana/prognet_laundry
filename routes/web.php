@@ -21,6 +21,7 @@ Route::middleware('auth')->group(function () {
 });
 
 // NOTE: yes, for now admin is useless, but dont worry it wont be for long
+// NOTE: okay maybe this shit is useless, fck it we balls deep alr
 // Route::middleware(['auth', 'role:admin'])->group(function () {
 //     Route::resource('staff', StaffManagementController::class);
 //     Route::resource('outlet.services', LaundryServiceController::class);
