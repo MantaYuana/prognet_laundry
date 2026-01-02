@@ -5,12 +5,13 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StaffManagementController;
 use App\Http\Controllers\LaundryServiceController;
 use App\Http\Controllers\Staff\StaffOrderController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome');
 // Route::redirect('/', '/login');
 
-Route::get('/dashboard', fn() => view('dashboard'))
+Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
