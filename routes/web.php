@@ -1,47 +1,47 @@
 <?php
 
 use App\Http\Controllers\OutletController;
-use App\Http\Controllers\UserManagementController;
-use App\Models\Outlet;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StaffManagementController;
+use App\Http\Controllers\LaundryServiceController;
+use App\Http\Controllers\Staff\StaffOrderController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
-use Livewire\Volt\Volt;
-use App\Livewire\Welcome;
-
-use App\Livewire\OutletTable;
 
 Route::view('/', 'welcome');
-Route::redirect('/', '/login');
-// Route::get('/', Welcome::class);
-// Route::view('/', 'welcome');
+// Route::redirect('/', '/login');
 
-Route::view('dashboard', 'dashboard')
+Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
-Route::view('profile', 'profile')
-    ->middleware(['auth'])
-    ->name('profile');
-
-Route::resource('outlet', OutletController::class);
-Route::resource('users', UserManagementController::class);
-// Admin Route
-// TODO: implement middleware
-Route::prefix('admin')->name('admin')->group(function () {
-    Route::resource('users', UserManagementController::class);
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Owner Route
-Route::prefix('owner')->name('owner.')->group(function () {
-    // Route::resource('outlets', OutletManagementController::class)->only([
-    //     'index',
-    //     'store',
-    //     'update',
-    //     'show',
-    //     'destroy'
-    // ]);
+// NOTE: yes, for now admin is useless, but dont worry it wont be for long
+// NOTE: okay maybe this shit is useless, fck it we balls deep alr
+// Route::middleware(['auth', 'role:admin'])->group(function () {
+//     Route::resource('staff', StaffManagementController::class);
+//     Route::resource('outlet.services', LaundryServiceController::class);
+//     Route::resource('outlet', OutletController::class);
+// });
+
+Route::middleware(['auth', 'role:owner', 'owner'])->group(function () {
+    Route::resource('outlet', OutletController::class);
+    Route::resource('outlet.services', LaundryServiceController::class);
+    Route::resource('outlet.staff', StaffManagementController::class);
+    Route::resource('outlet.staff.order', StaffOrderController::class);
 });
 
-// Outlet Route (danesh) 
-// Route::view('/outlet', 'livewire.outlet.index')->name('outlet.index');
+Route::middleware(['auth', 'role:staff', 'staff'])->group(function () {
+    Route::get('staff/orders', [StaffOrderController::class, 'index'])->name('staff.orders.index');
+    Route::get('staff/orders/create', [StaffOrderController::class, 'create'])->name('staff.orders.create');
+    Route::post('staff/orders', [StaffOrderController::class, 'store'])->name('staff.orders.store');
+    Route::get('staff/orders/{order}', [StaffOrderController::class, 'show'])->name('staff.orders.show');
+    Route::patch('staff/orders/{order}', [StaffOrderController::class, 'update'])->name('staff.orders.update');
+});
 
 require __DIR__ . '/auth.php';

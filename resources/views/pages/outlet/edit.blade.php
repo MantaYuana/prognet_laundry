@@ -1,13 +1,14 @@
 <x-app-layout>
-    <livewire:crud-edit
-        model="Outlet"
+    <x-crud-edit
+        title="Edit Outlet"
         :fields="[
             'name' => 'text',
             'address' => 'textarea',
             'phone_number' => 'text'
         ]"
-        :id="$outlet->id"
-        title="Edit Outlet"
+        :model="$outlet"
+        action="{{ route('outlet.update', $outlet) }}"
+        method="PUT"
         redirectRoute="outlet.index"
     />
 </x-app-layout>

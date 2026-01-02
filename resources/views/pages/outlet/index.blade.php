@@ -1,12 +1,14 @@
 <x-app-layout>
     <div class="px-24 py-8">
-            <livewire:crud-table
-                model="Outlet"
-                :rows="$usersPaginated"
-                :columns="['name', 'address', 'phone_number']"
-                title="Outlet"
-                createRoute="outlet.create"
-                editRoute="outlet.edit"
-            />
+        <x-crud-table
+            :rows="$outletPaginated"
+            :columns="['name', 'address', 'phone_number']"
+            title="Outlet"
+            createRoute="outlet.create"
+            editRoute="outlet.edit"
+            deleteRoute="outlet.destroy"
+            rowParamKey="outlet"
+        />
+
     </div>
 </x-app-layout>

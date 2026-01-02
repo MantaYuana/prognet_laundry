@@ -1,14 +1,12 @@
 <x-app-layout>
-    <div class="px-24 py-8">
-        <livewire:crud-create
-        model="Outlet"
+    <x-crud-create
+        title="Create Outlet"
         :fields="[
             'name' => 'text',
             'address' => 'textarea',
             'phone_number' => 'text'
         ]"
-        title="Create Outlet"
+        action="{{ route('outlet.store') }}"
         redirectRoute="outlet.index"
     />
-    </div>
 </x-app-layout>

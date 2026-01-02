@@ -3,56 +3,64 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Outlet;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Owner;
 
-class OutletController extends Controller
-{
-    public function index(Request $request)
-    {
-        $search = $request->input('search');
-        $user = User::find(Auth::id());
-        $usersPaginated = $user->outlets;
+class OutletController extends Controller {
+    public function index(Request $request) {
+        $owner = Owner::where('user_id', Auth::id())->firstOrFail();
+        $search = $request->string('search');
 
-        // return view('pages.outlet.index', [$usersPaginated]);
-        return view('pages.outlet.index', compact('usersPaginated'));
+        $outletPaginated = $owner->outlets()
+            ->when($search, fn($q) => $q->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('address', 'like', "%{$search}%")
+                    ->orWhere('phone_number', 'like', "%{$search}%");
+            }))
+            ->orderBy('name')
+            ->paginate(5)
+            ->withQueryString();
+
+        return view('pages.outlet.index', compact('outletPaginated'));
     }
 
-    public function create()
-    {
+    public function show(Outlet $outlet) {
+        return view('pages.outlet.show', compact('outlet'));
+    }
+
+    public function create() {
         return view('pages.outlet.create');
     }
 
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
+        $owner = Owner::where('user_id', Auth::id())->firstOrFail();
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'address' => 'required|string|max:255',
-            'phone_number' => 'required|string|min:5',
+            'phone_number' => 'required|string|min:5|max:13',
         ]);
 
-        Outlet::create([
+        $owner->outlets()->create([
             'name' => $validated['name'],
             'address' => $validated['address'],
             'phone_number' => $validated['phone_number'],
         ]);
 
-        return to_route('pages.outlet.index')->with('success', 'Outlet created successfully');
+        return to_route('outlet.index')->with('success', 'Outlet created successfully');
     }
 
-    public function edit(Outlet $outlet)
-    {
-        $target_outlet = Outlet::find($outlet);
-        return view('outlet.edit', compact('outlet'));
+    public function edit(Outlet $outlet) {
+        return view('pages.outlet.edit', compact('outlet'));
     }
 
-    public function update(Request $request, Outlet $outlet)
-    {
+    public function update(Request $request, Outlet $outlet) {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'address' => 'required|string|max:255',
-            'phone_number' => 'required|string|min:5',
+            'phone_number' => 'required|string|min:5|max:13',
         ]);
 
         $outlet->update([
@@ -61,12 +69,14 @@ class OutletController extends Controller
             'phone_number' => $validated['phone_number'],
         ]);
 
-        return to_route('pages.outlet.index')->with('success', 'Outlet updated successfully');
+        return to_route('outlet.index')->with('success', 'Outlet updated successfully');
     }
 
-    public function destroy(Outlet $outlet)
-    {
-        $target_outlet = Outlet::find($outlet);
-        $target_outlet->delete();
+    public function destroy(Outlet $outlet) {
+        $outlet->delete();
+
+        return redirect()
+            ->route('outlet.index')
+            ->with('success', 'Outlet berhasil dihapus');
     }
 }
