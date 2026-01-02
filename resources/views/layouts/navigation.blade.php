@@ -14,7 +14,118 @@
 
         <!-- Page Content -->
         <main class="flex-1 overflow-y-auto bg-base-200">
-            <!-- Page Heading -->
+            <!-- Header Section with Title and Breadcrumb -->
+            @php
+                $pageTitle = '';
+                $breadcrumbs = [];
+                
+                // Determine page title and breadcrumbs based on current route
+                if (request()->routeIs('dashboard')) {
+                    $pageTitle = 'Dashboard';
+                    $breadcrumbs = [
+                        ['label' => 'Luxe', 'url' => route('dashboard'), 'active' => false],
+                        ['label' => 'Dashboard', 'url' => null, 'active' => true]
+                    ];
+                } elseif (request()->routeIs('outlet.index')) {
+                    $pageTitle = 'Outlet';
+                    $breadcrumbs = [
+                        ['label' => 'Luxe', 'url' => route('dashboard'), 'active' => false],
+                        ['label' => 'Business', 'url' => null, 'active' => false],
+                        ['label' => 'Outlet', 'url' => null, 'active' => true]
+                    ];
+                } elseif (request()->routeIs('outlet.create')) {
+                    $pageTitle = 'Create Outlet';
+                    $breadcrumbs = [
+                        ['label' => 'Luxe', 'url' => route('dashboard'), 'active' => false],
+                        ['label' => 'Business', 'url' => null, 'active' => false],
+                        ['label' => 'Outlet', 'url' => route('outlet.index'), 'active' => false],
+                        ['label' => 'Create', 'url' => null, 'active' => true]
+                    ];
+                } elseif (request()->routeIs('outlet.edit')) {
+                    $pageTitle = 'Edit Outlet';
+                    $breadcrumbs = [
+                        ['label' => 'Luxe', 'url' => route('dashboard'), 'active' => false],
+                        ['label' => 'Business', 'url' => null, 'active' => false],
+                        ['label' => 'Outlet', 'url' => route('outlet.index'), 'active' => false],
+                        ['label' => 'Edit', 'url' => null, 'active' => true]
+                    ];
+                } elseif (request()->routeIs('outlet.show')) {
+                    $currentOutlet = session('current_outlet') ?? (isset($currentOutlet) ? $currentOutlet : null);
+                    $outletName = is_object($currentOutlet) ? $currentOutlet->name : 'Detail';
+                    $pageTitle = $outletName;
+                    $breadcrumbs = [
+                        ['label' => 'Luxe', 'url' => route('dashboard'), 'active' => false],
+                        ['label' => 'Business', 'url' => null, 'active' => false],
+                        ['label' => 'Outlet', 'url' => route('outlet.index'), 'active' => false],
+                        ['label' => $outletName, 'url' => null, 'active' => true]
+                    ];
+                } elseif (request()->routeIs('outlet.services.*')) {
+                    $currentOutlet = session('current_outlet') ?? (isset($currentOutlet) ? $currentOutlet : null);
+                    
+                    if (request()->routeIs('outlet.services.index')) {
+                        $pageTitle = 'Services';
+                        $breadcrumbs = [
+                            ['label' => 'Luxe', 'url' => route('dashboard'), 'active' => false],
+                            ['label' => 'Business', 'url' => null, 'active' => false],
+                            ['label' => 'Outlet', 'url' => route('outlet.index'), 'active' => false],
+                            ['label' => 'Services', 'url' => null, 'active' => true]
+                        ];
+                    } elseif (request()->routeIs('outlet.services.create')) {
+                        $pageTitle = 'Create Service';
+                        $breadcrumbs = [
+                            ['label' => 'Luxe', 'url' => route('dashboard'), 'active' => false],
+                            ['label' => 'Business', 'url' => null, 'active' => false],
+                            ['label' => 'Outlet', 'url' => route('outlet.index'), 'active' => false],
+                            ['label' => 'Services', 'url' => route('outlet.services.index', ['outlet' => is_object($currentOutlet) ? $currentOutlet->id : $currentOutlet]), 'active' => false],
+                            ['label' => 'Create', 'url' => null, 'active' => true]
+                        ];
+                    } elseif (request()->routeIs('outlet.services.edit')) {
+                        $pageTitle = 'Edit Service';
+                        $breadcrumbs = [
+                            ['label' => 'Luxe', 'url' => route('dashboard'), 'active' => false],
+                            ['label' => 'Business', 'url' => null, 'active' => false],
+                            ['label' => 'Outlet', 'url' => route('outlet.index'), 'active' => false],
+                            ['label' => 'Services', 'url' => route('outlet.services.index', ['outlet' => is_object($currentOutlet) ? $currentOutlet->id : $currentOutlet]), 'active' => false],
+                            ['label' => 'Edit', 'url' => null, 'active' => true]
+                        ];
+                    }
+                }
+            @endphp
+
+            <!-- Header Section -->
+            <div class="bg-white border-b border-gray-200">
+                <div class="px-6 py-4">
+                    <div class="flex items-start justify-between">
+                        <!-- Left: Title -->
+                        <div>
+                            <h1 class="text-2xl font-semibold text-gray-900">{{ $pageTitle }}</h1>
+                        </div>
+
+                        <!-- Right: Breadcrumb -->
+                        <nav class="flex items-center space-x-2 text-sm text-gray-500">
+                            @foreach($breadcrumbs as $index => $crumb)
+                                @if($crumb['url'])
+                                    <a href="{{ $crumb['url'] }}" class="transition-colors hover:text-teal-600">
+                                        {{ $crumb['label'] }}
+                                    </a>
+                                @else
+                                    <span class="{{ $crumb['active'] ? 'text-gray-900 font-medium' : '' }}">
+                                        {{ $crumb['label'] }}
+                                    </span>
+                                @endif
+                                
+                                @if(!$loop->last)
+                                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                    </svg>
+                                @endif
+                            @endforeach
+                        </nav>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page Heading (for backward compatibility) -->
             @isset($header)
             <div class="border-b bg-base-100 border-base-300">
                 <div class="px-6 py-6">
@@ -34,9 +145,9 @@
     <div class="drawer-side">
         <label for="sidebar-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
         
-        <aside id="sidebar" class="w-64 min-h-screen text-white transition-all duration-300 bg-gradient-to-b from-teal-600 via-teal-700 to-teal-800">
+        <aside id="sidebar" class="flex flex-col w-64 min-h-screen text-white transition-all duration-300 bg-gradient-to-b from-teal-600 via-teal-700 to-teal-800">
             <!-- Logo & Toggle Button -->
-            <div class="flex items-center justify-between p-4 border-b border-teal-500/30">
+            <div class="flex items-center justify-between flex-shrink-0 p-4 border-b border-teal-500/30">
                 <a href="{{ route('dashboard') }}" class="transition-opacity duration-300 group" id="logo-text">
                     <h1 class="font-serif text-3xl italic font-bold text-transparent bg-gradient-to-r from-teal-200 to-cyan-200 bg-clip-text">
                         Luxe
@@ -51,7 +162,7 @@
                 </label>
             </div>
 
-            <!-- Navigation Menu -->
+            <!-- Navigation Menu (with flex-1 to push user profile to bottom) -->
             <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
                 <!-- Overview Section -->
                 <div class="px-3 mb-2 sidebar-text">
@@ -96,7 +207,7 @@
                     $currentOutlet = session('current_outlet') ?? (isset($currentOutlet) ? $currentOutlet : null);
                 @endphp
                 @if($currentOutlet)
-                <a href="{{ route('outlet.services.index', ['outlet' => $currentOutlet->id ?? $currentOutlet]) }}" 
+                <a href="{{ route('outlet.services.index', ['outlet' => is_object($currentOutlet) ? $currentOutlet->id : $currentOutlet]) }}" 
                    class="flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-all duration-300 {{ request()->routeIs('outlet.services.*') ? 'bg-gradient-to-r from-teal-500 to-cyan-500 shadow-lg' : 'hover:bg-teal-600/50' }}">
                     <svg class="w-5 h-5 flex-shrink-0 {{ request()->routeIs('outlet.services.*') ? 'text-white' : 'text-teal-200' }}" 
                          fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -112,87 +223,83 @@
                 @endauth
             </nav>
 
-            <!-- User Profile at Bottom -->
-<div class="p-3 border-t border-teal-500/30">
-    <div class="w-full dropdown dropdown-end">
-        <label tabindex="0"
-       class="justify-start w-full h-auto min-h-0 px-3 py-2 normal-case user-profile-btn btn btn-ghost hover:bg-teal-600/50">
+            <!-- User Profile at Bottom (flex-shrink-0 to prevent shrinking) -->
+            <div class="flex-shrink-0 p-3 border-t border-teal-500/30">
+                <div class="w-full dropdown dropdown-top dropdown-end">
+                    <label tabindex="0"
+                           class="justify-start w-full h-auto min-h-0 px-3 py-2 normal-case user-profile-btn btn btn-ghost hover:bg-teal-600/50">
+                        <div class="flex items-center w-full space-x-3">
+                            <!-- Avatar -->
+                            <div class="flex-shrink-0 avatar placeholder">
+                                <div class="flex items-center justify-center w-10 h-10 text-white rounded-full bg-gradient-to-br from-teal-400 to-cyan-500">
+                                    <span class="text-sm font-semibold">
+                                        {{ strtoupper(substr(Auth::user()->name ?? 'G', 0, 1)) }}
+                                    </span>
+                                </div>
+                            </div>
 
-            <div class="flex items-center w-full space-x-3">
-                <!-- Avatar -->
-                <div class="flex-shrink-0 avatar placeholder">
-                    <div
-                        class="flex items-center justify-center w-10 h-10 text-white rounded-full bg-gradient-to-br from-teal-400 to-cyan-500">
-                        <span class="text-sm font-semibold">
-                            {{ strtoupper(substr(Auth::user()->name ?? 'G', 0, 1)) }}
-                        </span>
-                    </div>
+                            <!-- User Info -->
+                            <div class="flex-1 text-left sidebar-text">
+                                <div class="text-sm font-medium text-white">
+                                    {{ Auth::user()->name ?? 'Guest' }}
+                                </div>
+                                <div class="text-xs text-teal-200">
+                                    @auth
+                                        {{ ucfirst(Auth::user()->getRoleNames()->first() ?? 'User') }}
+                                    @else
+                                        Guest
+                                    @endauth
+                                </div>
+                            </div>
+
+                            <!-- Arrow -->
+                            <svg class="w-4 h-4 text-teal-200 transition-transform sidebar-text"
+                                 fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M5 15l7-7 7 7" />
+                            </svg>
+                        </div>
+                    </label>
+
+                    <!-- Dropdown Menu -->
+                    <ul tabindex="0"
+                        class="dropdown-content z-[9999] mb-2 w-full min-w-[180px]
+                               rounded-xl bg-teal-700 shadow-xl
+                               border border-teal-500/30 p-2 space-y-1">
+
+                        <!-- PROFILE -->
+                        @if (Route::has('profile.edit'))
+                            <li>
+                                <a href="{{ route('profile.edit') }}"
+                                   class="flex items-center w-full h-10 gap-3 px-4 text-sm font-medium text-teal-100 transition rounded-lg hover:bg-teal-600/60">
+                                    <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
+                                    <span>Profile</span>
+                                </a>
+                            </li>
+                        @endif
+
+                        <!-- LOGOUT -->
+                        @if (Route::has('logout'))
+                            <li>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit"
+                                            class="flex items-center w-full h-10 gap-3 px-4 text-sm font-medium text-teal-100 transition rounded-lg hover:bg-red-500/80">
+                                        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                                        </svg>
+                                        <span>Log Out</span>
+                                    </button>
+                                </form>
+                            </li>
+                        @endif
+                    </ul>
                 </div>
-
-                <!-- User Info -->
-                <div class="flex-1 text-left sidebar-text">
-                    <div class="text-sm font-medium text-white">
-                        {{ Auth::user()->name ?? 'Guest' }}
-                    </div>
-                    <div class="text-xs text-teal-200">
-                        @auth
-                            {{ Auth::user()->getRoleNames()->first() ?? 'User' }}
-                        @else
-                            Guest
-                        @endauth
-                    </div>
-                </div>
-
-                <!-- Arrow -->
-                <svg class="w-4 h-4 text-teal-200 transition-transform sidebar-text"
-                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M19 9l-7 7-7-7" />
-                </svg>
             </div>
-        </label>
-
-        <!-- Dropdown Menu -->
-        <ul tabindex="0"
-    class="dropdown-content z-[9999] mt-2 w-full min-w-[180px]
-           rounded-xl bg-teal-700 shadow-xl
-           border border-teal-500/30 p-2 space-y-1">
-
-    <!-- PROFILE -->
-    @if (Route::has('profile.edit'))
-        <li>
-            <a href="{{ route('profile.edit') }}"
-               class="flex items-center w-full h-10 gap-3 px-4 text-sm font-medium text-teal-100 transition rounded-lg hover:bg-teal-600/60">
-                <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-                <span>Profile</span>
-            </a>
-        </li>
-    @endif
-
-    <!-- LOGOUT -->
-    @if (Route::has('logout'))
-        <li>
-            <form method="POST" action="{{ route('logout') }}">
-                @csrf
-                <button type="submit"
-                    class="flex items-center w-full h-10 gap-3 px-4 text-sm font-medium text-teal-100 transition rounded-lg hover:bg-red-500/80">
-                    <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                    </svg>
-                    <span>Log Out</span>
-                </button>
-            </form>
-        </li>
-    @endif
-</ul>
-
-    </div>
-</div>
-
         </aside>
     </div>
 </div>
@@ -256,7 +363,6 @@ div:has(> .apexcharts-canvas) {
     max-height: 450px !important;
     overflow: hidden;
 }
-
 </style>
 
 <script>
