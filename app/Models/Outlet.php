@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\User;
 
 class Outlet extends Model {
     use HasFactory, SoftDeletes;
@@ -14,21 +13,11 @@ class Outlet extends Model {
         'name',
         'address',
         'phone_number',
-        'owner_id'
     ];
 
     public function owner() {
-        return $this->belongsTo(Owner::class);
+        return $this->belongsTo(User::class);
     }
-
-    public function staff() {
-        return $this->hasMany(Staff::class);
-    }
-
-    public function user()
-{
-    return $this->belongsTo(User::class);
-}
 
     public function services(){
         return $this->hasMany(LaundryService::class);

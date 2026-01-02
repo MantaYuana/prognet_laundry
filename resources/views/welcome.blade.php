@@ -13,7 +13,7 @@
         <!-- Styles -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="bg-surface text-gray-600 font-sans antialiased">
+<body class="bg-surface text-gray-600 font-sans antialiased">
 
     <nav class="w-full bg-white/80 backdrop-blur-md border-b border-line fixed top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -25,14 +25,12 @@
                 </div>
                 
                 <div class="hidden md:flex space-x-4 items-center">
-                    @if (Route::has('login'))
-                        <div class="flex gap-4 justify-end">
-                            <a href="{{ route('login') }}" class="font-semibold">Log in</a>
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}" class="font-semibold">Register</a>
-                        @endif
-                        </div>
-                    @endif
+                    <a href="{{ url('/register') }}" class="px-5 py-2.5 text-gray-600 hover:text-primary font-medium transition duration-150">
+                        Register
+                    </a>
+                    <a href="{{ url('/login') }}" class="px-5 py-2.5 bg-primary text-white font-semibold rounded-md shadow-md hover:bg-primary-dark transition duration-150 ease-in-out">
+                        Login
+                    </a>
                 </div>
 
                 <div class="md:hidden flex items-center">
@@ -50,7 +48,7 @@
         
         <div class="absolute inset-y-0 left-0 w-full lg:w-7/12 z-0 pointer-events-none overflow-hidden">
             <img 
-                src="{{ asset('images/setrika.webp') }}" 
+                src="{{ asset('images/setrika.png') }}" 
                 alt="Background Watermark" 
                 class="w-full h-full object-cover object-left-bottom opacity-10 grayscale"
             >

@@ -4,9 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use App\Models\Outlet;
-use App\Models\Owner;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -19,12 +16,8 @@ class DatabaseSeeder extends Seeder {
      * Seed the application's database.
      */
     public function run(): void {
-        $adminRole = Role::firstOrCreate(['name' => 'admin']);
-        $ownerRole = Role::firstOrCreate(['name' => 'owner']);
-        $customerRole = Role::firstOrCreate(['name' => 'customer']);
-        $staffRole = Role::firstOrCreate(['name' => 'staff']);
-
-        User::firstOrCreate(
+        
+        User::create(
             [
                 'email' => 'Admin001@prognetlaravel.com',
                 'name' => 'Admin',
@@ -32,48 +25,9 @@ class DatabaseSeeder extends Seeder {
                 'email_verified_at' => now(),
                 'remember_token' => Str::random(10),
             ],
-        )->assignRole($adminRole);
-
-        User::firstOrCreate(
-            [
-                'email' => 'Owner001@prognetlaravel.com',
-                'name' => 'Owner',
-                'password' => Hash::make("Owner123"),
-                'email_verified_at' => now(),
-                'remember_token' => Str::random(10),
-            ],
-        )->assignRole($ownerRole);
-
-        Owner::firstOrCreate(
-            [
-                'address' => 'Tukad Balian',
-                'phone_number' => '089643471945',
-                'user_id' => 2,
-            ],
         );
-
-        Owner::firstOrCreate(
-            [
-                'address' => 'Admin Address',
-                'phone_number' => '089643471945',
-                'user_id' => 1,
-            ],
-        );
-
-        Outlet::firstOrCreate(
-            [
-                'name' => 'Outlet 1',
-                'address' => 'Tukad Balian',
-                'phone_number' => '089643471945',
-                'owner_id' => 1,
-            ],
-        );
-
+        
         User::factory(10)->create();
         Outlet::factory(10)->create();
-
-        $this->call([
-            CustomerOrderSeeder::class,
-        ]);
     }
 }

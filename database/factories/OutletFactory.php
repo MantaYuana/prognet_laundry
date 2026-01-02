@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\Owner;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Outlet>
@@ -16,10 +15,10 @@ class OutletFactory extends Factory {
      */
     public function definition(): array {
         return [
-            'name'   => fake()->company(),
-            'address' => fake()->address(),
-            'phone_number' => fake()->phoneNumber(),
-            'owner_id' => Owner::factory(),
+            'name'   => $this->faker->company(),
+            'address' => $this->faker->address(),
+            'phone_number' => $this->faker->phoneNumber(),
+            'user_id' => 1,
         ];
     }
 }
