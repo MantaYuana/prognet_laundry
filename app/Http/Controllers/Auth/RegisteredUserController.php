@@ -72,6 +72,13 @@ class RegisteredUserController extends Controller {
                 'user_id' => $user->id,
             ]);
         }
+        if ($data['role'] === 'customer') {
+            Customer::create([
+                'address' => $data['address'] ?? null,
+                'phone_number' => $data['phone_number'] ?? null,
+                'user_id' => $user->id,
+            ]);
+        }
 
         event(new Registered($user));
 
