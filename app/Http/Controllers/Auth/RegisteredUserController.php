@@ -38,7 +38,7 @@ class RegisteredUserController extends Controller {
             'role' => ['required', 'in:staff,owner,customer'],
             'address' => ['required', 'string', 'max:500'],
             'phone_number' => ['required', 'string', 'max:13'],
-            'outlet_id' => ['required_if:role,staff', 'exists:outlets,id'],
+            'outlet_id' => ['nullable', 'required_if:role,staff', 'exists:outlets,id'],
         ]);
 
         $user = User::create([
@@ -65,13 +65,6 @@ class RegisteredUserController extends Controller {
                 'user_id' => $user->id,
             ]);
         } 
-        if ($data['role'] === 'owner') {
-            Customer::create([
-                'address' => $data['address'] ?? null,
-                'phone_number' => $data['phone_number'] ?? null,
-                'user_id' => $user->id,
-            ]);
-        }
         if ($data['role'] === 'customer') {
             Customer::create([
                 'address' => $data['address'] ?? null,
