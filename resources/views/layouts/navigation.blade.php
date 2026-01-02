@@ -1,146 +1,284 @@
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
-    <!-- Primary Navigation Menu -->
-    <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
-            <div class="flex">
-                <!-- Logo -->
-                <div class="flex items-center shrink-0">
-                    <a href="{{ route('dashboard') }}" class="flex items-center">
-                        <h1 class="font-serif text-3xl italic font-bold tracking-tighter text-primary">
-                            Luxe
-                        </h1>
-                    </a>
-                </div>
-
-                <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
-                    @if(Auth::user()->hasRole('owner'))
-                    <x-nav-link :href="route('outlet.index')" :active="request()->routeIs('outlet.*') && !request()->routeIs('outlet.services.*')">
-                        {{ __('Outlet') }}
-                    </x-nav-link>
-                    @if($currentOutlet)
-                    <x-nav-link
-                        :href="route('outlet.services.index', ['outlet' => $currentOutlet->id])"
-                        :active="request()->routeIs('outlet.services.*')">
-                        {{ __('Services') }}
-                    </x-nav-link>
-                    @endif
-                    @endif
-                </div>
-            </div>
-
-            <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
-                <x-dropdown align="right" width="48">
-                    <x-slot name="trigger">
-                        <button
-                            class="inline-flex items-center px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out bg-white border border-transparent rounded-md hover:text-gray-700 focus:outline-none">
-                            @auth
-                                <div>{{ Auth::user()->name }}</div>
-                            @else
-                                <div>Guest</div>
-                            @endauth
-
-                            <div class="ms-1">
-                                <svg class="w-4 h-4 fill-current" xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd"
-                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                        </button>
-                    </x-slot>
-
-                    <x-slot name="content">
-                        @if (Route::has('profile.edit'))
-                            <x-dropdown-link :href="route('profile.edit')">
-                                {{ __('Profile') }}
-                            </x-dropdown-link>
-                        @endif
-                        
-                        <!-- Authentication -->
-                        @if (Route::has('logout'))
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <x-dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault(); this.closest('form').submit();">
-                                    {{ __('Log Out') }}
-                                </x-dropdown-link>
-                            </form>
-                        @endif
-                    </x-slot>
-                </x-dropdown>
-            </div>
-
-
-            
-            <!-- Hamburger -->
-            <div class="flex items-center -me-2 sm:hidden">
-                <button @click="open = ! open"
-                    class="inline-flex items-center justify-center p-2 text-gray-400 transition duration-150 ease-in-out rounded-md hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500">
-                    <svg class="w-6 h-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                        <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex"
-                            stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 6h16M4 12h16M4 18h16" />
-                        <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round"
-                            stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-        </div>
-    </div>
-
+<div class="drawer lg:drawer-open">
+    <input id="sidebar-drawer" type="checkbox" class="drawer-toggle" />
+    <input id="sidebar-collapse" type="checkbox" class="hidden" />
     
-    <!-- Responsive Navigation Menu -->
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
-        <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
-            </x-responsive-nav-link>
-            @if(Auth::user()->hasRole('owner'))
-            <x-responsive-nav-link :href="route('outlet.index')" :active="request()->routeIs('outlet.*')">
-                {{ __('Outlet') }}
-            </x-responsive-nav-link>
-            @endif
+    <div class="flex flex-col drawer-content">
+        <!-- Mobile Menu Button -->
+        <div class="p-4 border-b lg:hidden bg-base-100 border-base-300">
+            <label for="sidebar-drawer" class="btn btn-square btn-ghost">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            </label>
         </div>
-        
-        <!-- Responsive Settings Options -->    
-        <div class="pt-4 pb-1 border-t border-gray-200">
-            <div class="px-4">
-                @auth
-                    <div class="text-base font-medium text-gray-800">
-                        {{ Auth::user()->name }}
-                    </div>
-                    <div class="text-sm font-medium text-gray-500">
-                        {{ Auth::user()->email }}
-                    </div>
-                @else
-                    <div class="text-base font-medium text-gray-800">Guest</div>
-                @endauth
-            </div>
-            
-            <div class="mt-3 space-y-1">
-                @if (Route::has('profile.edit'))
-                    <x-responsive-nav-link :href="route('profile.edit')">
-                        {{ __('Profile') }}
-                    </x-responsive-nav-link>
-                @endif
 
-                <!-- Authentication -->
-                @if (Route::has('logout'))
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <x-responsive-nav-link :href="route('logout')"
-                            onclick="event.preventDefault(); this.closest('form').submit();">
-                            {{ __('Log Out') }}
-                        </x-responsive-nav-link>
-                    </form>
-                @endif
+        <!-- Page Content -->
+        <main class="flex-1 overflow-y-auto bg-base-200">
+            <!-- Page Heading -->
+            @isset($header)
+            <div class="border-b bg-base-100 border-base-300">
+                <div class="px-6 py-6">
+                    {{ $header }}
+                </div>
             </div>
-        </div>
+            @endisset
+
+            <!-- Main Content Slot -->
+            <div class="p-6">
+                {{ $slot }}
+            </div>
+        </main>
     </div>
-</nav>
+
+    <!-- Sidebar -->
+    <div class="drawer-side">
+        <label for="sidebar-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
+        
+        <aside id="sidebar" class="w-64 min-h-screen text-white transition-all duration-300 bg-gradient-to-b from-teal-600 via-teal-700 to-teal-800">
+            <!-- Logo & Toggle Button -->
+            <div class="flex items-center justify-between p-4 border-b border-teal-500/30">
+                <a href="{{ route('dashboard') }}" class="transition-opacity duration-300 group" id="logo-text">
+                    <h1 class="font-serif text-3xl italic font-bold text-transparent bg-gradient-to-r from-teal-200 to-cyan-200 bg-clip-text">
+                        Luxe
+                    </h1>
+                </a>
+                
+                <!-- Collapse/Expand Toggle Button -->
+                <label for="sidebar-collapse" class="hidden btn btn-ghost btn-sm btn-circle hover:bg-teal-600/50 lg:flex" onclick="toggleSidebar()">
+                    <svg id="collapse-icon" class="w-5 h-5 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/>
+                    </svg>
+                </label>
+            </div>
+
+            <!-- Navigation Menu -->
+            <nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+                <!-- Overview Section -->
+                <div class="px-3 mb-2 sidebar-text">
+                    <span class="text-xs font-semibold tracking-wider text-teal-200 uppercase">Overview</span>
+                </div>
+
+                <!-- Dashboard -->
+                <a href="{{ route('dashboard') }}" 
+                   class="flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-all duration-300 {{ request()->routeIs('dashboard') ? 'bg-gradient-to-r from-teal-500 to-cyan-500 shadow-lg' : 'hover:bg-teal-600/50' }}">
+                    <svg class="w-5 h-5 flex-shrink-0 {{ request()->routeIs('dashboard') ? 'text-white' : 'text-teal-200' }}" 
+                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                              d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                    </svg>
+                    <span class="font-medium sidebar-text {{ request()->routeIs('dashboard') ? 'text-white' : 'text-teal-100' }}">
+                        Dashboard
+                    </span>
+                </a>
+
+                @auth
+                @if(Auth::check() && Auth::user()->hasRole('owner'))
+                <!-- Business Section -->
+                <div class="px-3 mt-6 mb-2 sidebar-text">
+                    <span class="text-xs font-semibold tracking-wider text-teal-200 uppercase">Business</span>
+                </div>
+
+                <!-- Outlet -->
+                <a href="{{ route('outlet.index') }}" 
+                   class="flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-all duration-300 {{ request()->routeIs('outlet.index') || (request()->routeIs('outlet.*') && !request()->routeIs('outlet.services.*')) ? 'bg-gradient-to-r from-teal-500 to-cyan-500 shadow-lg' : 'hover:bg-teal-600/50' }}">
+                    <svg class="w-5 h-5 flex-shrink-0 {{ request()->routeIs('outlet.index') || (request()->routeIs('outlet.*') && !request()->routeIs('outlet.services.*')) ? 'text-white' : 'text-teal-200' }}" 
+                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                              d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                    </svg>
+                    <span class="font-medium sidebar-text {{ request()->routeIs('outlet.index') || (request()->routeIs('outlet.*') && !request()->routeIs('outlet.services.*')) ? 'text-white' : 'text-teal-100' }}">
+                        Outlet
+                    </span>
+                </a>
+
+                <!-- Services -->
+                @php
+                    $currentOutlet = session('current_outlet') ?? (isset($currentOutlet) ? $currentOutlet : null);
+                @endphp
+                @if($currentOutlet)
+                <a href="{{ route('outlet.services.index', ['outlet' => $currentOutlet->id ?? $currentOutlet]) }}" 
+                   class="flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-all duration-300 {{ request()->routeIs('outlet.services.*') ? 'bg-gradient-to-r from-teal-500 to-cyan-500 shadow-lg' : 'hover:bg-teal-600/50' }}">
+                    <svg class="w-5 h-5 flex-shrink-0 {{ request()->routeIs('outlet.services.*') ? 'text-white' : 'text-teal-200' }}" 
+                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                              d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                    </svg>
+                    <span class="font-medium sidebar-text {{ request()->routeIs('outlet.services.*') ? 'text-white' : 'text-teal-100' }}">
+                        Services
+                    </span>
+                </a>
+                @endif
+                @endif
+                @endauth
+            </nav>
+
+            <!-- User Profile at Bottom -->
+<div class="p-3 border-t border-teal-500/30">
+    <div class="w-full dropdown dropdown-end">
+        <label tabindex="0"
+       class="justify-start w-full h-auto min-h-0 px-3 py-2 normal-case user-profile-btn btn btn-ghost hover:bg-teal-600/50">
+
+            <div class="flex items-center w-full space-x-3">
+                <!-- Avatar -->
+                <div class="flex-shrink-0 avatar placeholder">
+                    <div
+                        class="flex items-center justify-center w-10 h-10 text-white rounded-full bg-gradient-to-br from-teal-400 to-cyan-500">
+                        <span class="text-sm font-semibold">
+                            {{ strtoupper(substr(Auth::user()->name ?? 'G', 0, 1)) }}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- User Info -->
+                <div class="flex-1 text-left sidebar-text">
+                    <div class="text-sm font-medium text-white">
+                        {{ Auth::user()->name ?? 'Guest' }}
+                    </div>
+                    <div class="text-xs text-teal-200">
+                        @auth
+                            {{ Auth::user()->getRoleNames()->first() ?? 'User' }}
+                        @else
+                            Guest
+                        @endauth
+                    </div>
+                </div>
+
+                <!-- Arrow -->
+                <svg class="w-4 h-4 text-teal-200 transition-transform sidebar-text"
+                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 9l-7 7-7-7" />
+                </svg>
+            </div>
+        </label>
+
+        <!-- Dropdown Menu -->
+        <ul tabindex="0"
+    class="dropdown-content z-[9999] mt-2 w-full min-w-[180px]
+           rounded-xl bg-teal-700 shadow-xl
+           border border-teal-500/30 p-2 space-y-1">
+
+    <!-- PROFILE -->
+    @if (Route::has('profile.edit'))
+        <li>
+            <a href="{{ route('profile.edit') }}"
+               class="flex items-center w-full h-10 gap-3 px-4 text-sm font-medium text-teal-100 transition rounded-lg hover:bg-teal-600/60">
+                <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                <span>Profile</span>
+            </a>
+        </li>
+    @endif
+
+    <!-- LOGOUT -->
+    @if (Route::has('logout'))
+        <li>
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit"
+                    class="flex items-center w-full h-10 gap-3 px-4 text-sm font-medium text-teal-100 transition rounded-lg hover:bg-red-500/80">
+                    <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    <span>Log Out</span>
+                </button>
+            </form>
+        </li>
+    @endif
+</ul>
+
+    </div>
+</div>
+
+        </aside>
+    </div>
+</div>
+
+<style>
+/* Sidebar collapsed state */
+#sidebar.collapsed {
+    width: 80px !important;
+}
+
+#sidebar.collapsed .sidebar-text {
+    opacity: 0;
+    width: 0;
+    overflow: hidden;
+    transition: opacity 0.3s ease, width 0.3s ease;
+}
+
+#sidebar.collapsed #logo-text {
+    opacity: 0;
+    width: 0;
+    overflow: hidden;
+}
+
+#sidebar.collapsed .dropdown {
+    position: relative;
+}
+
+#sidebar.collapsed .dropdown-content {
+    left: 100%;
+    margin-left: 0.5rem;
+    bottom: 0;
+}
+
+#sidebar:not(.collapsed) .sidebar-text {
+    opacity: 1;
+    transition: opacity 0.3s ease 0.2s;
+}
+
+/* Rotate icon when collapsed */
+#sidebar.collapsed #collapse-icon {
+    transform: rotate(180deg);
+}
+
+/* Limit chart/graph container height */
+[id*="chart"], 
+[class*="chart-container"],
+.apexcharts-canvas,
+canvas {
+    max-height: 400px !important;
+}
+
+/* Specific for common chart libraries */
+.chartjs-render-monitor,
+.apexcharts-svg {
+    max-height: 400px !important;
+}
+
+/* Container untuk chart sections */
+div:has(> canvas),
+div:has(> .apexcharts-canvas) {
+    max-height: 450px !important;
+    overflow: hidden;
+}
+
+</style>
+
+<script>
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.toggle('collapsed');
+    
+    // Save state to localStorage
+    if (sidebar.classList.contains('collapsed')) {
+        localStorage.setItem('sidebarCollapsed', 'true');
+    } else {
+        localStorage.setItem('sidebarCollapsed', 'false');
+    }
+}
+
+// Load saved state on page load
+document.addEventListener('DOMContentLoaded', function() {
+    const sidebar = document.getElementById('sidebar');
+    const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+    
+    if (isCollapsed) {
+        sidebar.classList.add('collapsed');
+    }
+});
+</script>
