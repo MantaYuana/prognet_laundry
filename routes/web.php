@@ -5,6 +5,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StaffManagementController;
 use App\Http\Controllers\LaundryServiceController;
 use App\Http\Controllers\Staff\StaffOrderController;
+use App\Http\Controllers\Customer\CustomerOrderController;
+use App\Http\Controllers\Customer\CustomerOutletFinderController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
@@ -28,6 +30,18 @@ Route::middleware('auth')->group(function () {
 //     Route::resource('outlet.services', LaundryServiceController::class);
 //     Route::resource('outlet', OutletController::class);
 // });
+
+// TODO: also try to refactor views name bcuz it shit ass
+
+// NOTE: fuck this stupid wildcard conflict shit, worked on this shit for 3 hour fucker fucking shit
+// TODO: add middleware for ensure customer
+Route::middleware(['auth', 'role:customer'])->group(function () {
+// Route::middleware(['auth', 'role:customer', 'customer'])->group(function () {
+    Route::get('outlet/find', [CustomerOutletFinderController::class, 'index'])->name('customer.outlet.index');
+    Route::get('outlet/find/{outlet}', [CustomerOutletFinderController::class, 'show'])->name('customer.outlet.show');
+    Route::get('orders', [CustomerOrderController::class, 'index'])->name('customer.order.index');
+    Route::get('orders/{order}', [CustomerOrderController::class, 'show'])->name('customer.order.show');
+});
 
 Route::middleware(['auth', 'role:owner', 'owner'])->group(function () {
     Route::resource('outlet', OutletController::class);
