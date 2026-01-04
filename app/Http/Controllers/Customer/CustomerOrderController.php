@@ -11,15 +11,32 @@ use App\Models\LaundryService;
 use App\Services\OrderService;
 
 class CustomerOrderController extends Controller {
-    public function index() {
+    public function index(Request $request) {
         $customer = Customer::where('user_id', auth()->id())->firstOrFail();
+
+        $filters = $request->validate([
+            'status' => 'nullable|in:' . implode(',', Order::STATUSES),
+            'code' => 'nullable|string|max:50',
+            'from' => 'nullable|date',
+            'to' => 'nullable|date',
+        ]);
 
         $orders = Order::with(['outlet', 'items.laundryService'])
             ->where('customer_id', $customer->id)
+            ->when($filters['status'] ?? null, fn($q, $status) => $q->where('status', $status))
+            ->when($filters['code'] ?? null, fn($q, $code) => $q->where('code', 'like', '%' . $code . '%'))
+            ->when($filters['from'] ?? null, fn($q, $from) => $q->whereDate('created_at', '>=', $from))
+            ->when($filters['to'] ?? null, fn($q, $to) => $q->whereDate('created_at', '<=', $to))
             ->latest()
-            ->paginate(10);
+            ->paginate(10)
+            ->withQueryString();
 
-        return view('pages.customer.order.index', compact('orders'));
+        // NOTE: suud be nganggo compact biin ruh usak gen to nok cicing
+        return view('pages.customer.order.index', [
+            'orders' => $orders,
+            'statuses' => Order::STATUSES,
+            'filters' => $filters,
+        ]);
     }
 
     public function create(Outlet $outlet) {
@@ -71,5 +88,26 @@ class CustomerOrderController extends Controller {
         $order->load(['outlet', 'staff.profile', 'items.laundryService']);
 
         return view('pages.customer.order.show', compact('order'));
+    }
+
+    public function uploadPaymentProof(Request $request, Order $order) {
+        $customer = Customer::where('user_id', auth()->id())->firstOrFail();
+        abort_if($order->customer_id !== $customer->id, 403);
+
+        $data = $request->validate([
+            'payment_method' => 'required|string|max:50',
+            'proof' => 'required|file|mimes:jpg,jpeg,png,pdf|max:4096',
+        ]);
+
+        $path = $request->file('proof')->store('payment-proofs', 'public');
+
+        $order->update([
+            'payment_method' => $data['payment_method'],
+            'payment_status' => 'pending',
+            'payment_proof_path' => $path,
+            'payment_confirm' => true
+        ]);
+
+        return back()->with('success', 'Payment proof uploaded. Awaiting verification.');
     }
 }
