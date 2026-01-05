@@ -5,6 +5,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StaffManagementController;
 use App\Http\Controllers\LaundryServiceController;
 use App\Http\Controllers\Staff\StaffOrderController;
+use App\Http\Controllers\Customer\CustomerOrderController;
+use App\Http\Controllers\Customer\CustomerOutletFinderController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
@@ -29,6 +31,20 @@ Route::middleware('auth')->group(function () {
 //     Route::resource('outlet', OutletController::class);
 // });
 
+// TODO: also try to refactor views name bcuz it shit ass
+
+// NOTE: fuck this stupid wildcard conflict shit, worked on this shit for 3 hour fucker fucking shit
+// TODO: add middleware for ensure customer
+Route::middleware(['auth', 'role:customer'])->group(function () {
+    Route::get('outlet/find', [CustomerOutletFinderController::class, 'index'])->name('customer.outlet.index');
+    Route::get('outlet/find/{outlet}', [CustomerOutletFinderController::class, 'show'])->name('customer.outlet.show');
+    Route::get('outlet/{outlet}/neworder', [CustomerOrderController::class, 'create'])->name('customer.order.create');
+    Route::post('outlet/{outlet}/neworder', [CustomerOrderController::class, 'store'])->name('customer.order.store');
+    Route::get('orders', [CustomerOrderController::class, 'index'])->name('customer.order.index');
+    Route::get('orders/{order}', [CustomerOrderController::class, 'show'])->name('customer.order.show');
+    Route::post('orders/{order}/payment-proof', [CustomerOrderController::class, 'uploadPaymentProof'])->name('customer.order.payment-proof');
+});
+
 Route::middleware(['auth', 'role:owner', 'owner'])->group(function () {
     Route::resource('outlet', OutletController::class);
     Route::resource('outlet.services', LaundryServiceController::class);
@@ -42,6 +58,8 @@ Route::middleware(['auth', 'role:staff', 'staff'])->group(function () {
     Route::post('staff/orders', [StaffOrderController::class, 'store'])->name('staff.orders.store');
     Route::get('staff/orders/{order}', [StaffOrderController::class, 'show'])->name('staff.orders.show');
     Route::patch('staff/orders/{order}', [StaffOrderController::class, 'update'])->name('staff.orders.update');
+    Route::post('staff/orders/{order}/payment/approve', [StaffOrderController::class, 'approvePayment'])->name('staff.orders.payment.approve');
+    Route::post('staff/orders/{order}/payment/reject', [StaffOrderController::class, 'rejectPayment'])->name('staff.orders.payment.reject');
 });
 
 require __DIR__ . '/auth.php';

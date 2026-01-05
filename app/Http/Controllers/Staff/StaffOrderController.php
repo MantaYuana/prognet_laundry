@@ -78,13 +78,12 @@ class StaffOrderController extends Controller {
             'items.*.laundry_service_id' => 'required|exists:laundry_services,id',
             'items.*.quantity' => 'required|integer|min:1',
         ]);
-        
+
         if ($user->hasRole('staff')) {
             $staff = Staff::where('user_id', $user->id)->first();
             $data['outlet_id'] = $staff->outlet_id;
             $target_staff_id = $staff->id;
-        }
-        else {
+        } else {
             $data['outlet_id'] = request()->route('outlet');
             $target_staff_id = null;
         }
@@ -146,5 +145,35 @@ class StaffOrderController extends Controller {
         $order->update(['status' => $status]);
 
         return redirect()->route('outlet.staff.order.show', $order)->with('success', 'Status updated');
+    }
+
+    public function approvePayment(Order $order) {
+        $user = auth()->user();
+        if ($user->hasRole('staff')) {
+            $staff = Staff::where('user_id', $user->id)->first();
+            abort_if($order->outlet_id !== $staff->outlet_id, 403);
+        }
+        $order->update([
+            'payment_status' => 'paid',
+            'payment_confirm' => true,
+            'paid_at' => now(),
+        ]);
+
+        return back()->with('success', 'Payment approved');
+    }
+
+    public function rejectPayment(Order $order) {
+        $user = auth()->user();
+        if ($user->hasRole('staff')) {
+            $staff = Staff::where('user_id', $user->id)->first();
+            abort_if($order->outlet_id !== $staff->outlet_id, 403);
+        }
+
+        $order->update([
+            'payment_status' => 'rejected',
+            'payment_confirm' => false,
+        ]);
+
+        return back()->with('success', 'Payment rejected');
     }
 }

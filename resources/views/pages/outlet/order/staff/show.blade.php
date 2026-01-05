@@ -102,93 +102,11 @@
                     </div>
                 </div>
 
+                
+
                 <!-- Status and Actions Sidebar -->
                 <div class="space-y-6">
-                    <!-- Status Card -->
-                    <div class="card bg-base-100 shadow-xl">
-                        <div class="card-body">
-                            <h3 class="card-title">Status</h3>
-                            
-                            @php
-                                $statusColors = [
-                                    'ordered' => 'badge-info',
-                                    'accepted' => 'badge-primary',
-                                    'being_washed' => 'badge-warning',
-                                    'ready_for_pickup' => 'badge-accent',
-                                    'done' => 'badge-success',
-                                ];
-                            @endphp
-                            
-                            <div class="space-y-4">
-                                <div class="flex items-center justify-center">
-                                    <span class="badge {{ $statusColors[$order->status] ?? 'badge-ghost' }} badge-lg">
-                                        {{ ucwords(str_replace('_', ' ', $order->status)) }}
-                                    </span>
-                                </div>
-
-                                <!-- Status Timeline -->
-                                <ul class="steps steps-vertical">
-                                    <li class="step {{ in_array($order->status, ['ordered', 'accepted', 'being_washed', 'ready_for_pickup', 'done']) ? 'step-primary' : '' }}">Ordered</li>
-                                    <li class="step {{ in_array($order->status, ['accepted', 'being_washed', 'ready_for_pickup', 'done']) ? 'step-primary' : '' }}">Accepted</li>
-                                    <li class="step {{ in_array($order->status, ['being_washed', 'ready_for_pickup', 'done']) ? 'step-primary' : '' }}">Being Washed</li>
-                                    <li class="step {{ in_array($order->status, ['ready_for_pickup', 'done']) ? 'step-primary' : '' }}">Ready for Pickup</li>
-                                    <li class="step {{ $order->status === 'done' ? 'step-primary' : '' }}">Done</li>
-                                </ul>
-
-                                <!-- Update Status Buttons -->
-                                <div class="divider">Update Status</div>
-                                
-                                @if ($order->status !== 'done')
-                                    <div class="flex flex-col gap-2">
-                                        @if ($order->status === 'ordered')
-                                            <form action="{{ $isStaff ? route('staff.orders.show', $order) : route('outlet.staff.order.show', ['outlet' => request()->route('outlet'), 'order' => $order]) }}" method="POST">
-                                                @csrf
-                                                @method('PATCH')
-                                                <input type="hidden" name="status" value="accepted">
-                                                <button type="submit" class="btn btn-primary btn-sm w-full">Accept Order</button>
-                                            </form>
-                                        @endif
-                                        
-                                        @if ($order->status === 'accepted')
-                                            <form action="{{ $isStaff ? route('staff.orders.show', $order) : route('outlet.staff.order.show', ['outlet' => request()->route('outlet'), 'order' => $order]) }}" method="POST">
-                                                @csrf
-                                                @method('PATCH')
-                                                <input type="hidden" name="status" value="being_washed">
-                                                <button type="submit" class="btn btn-warning btn-sm w-full">Start Washing</button>
-                                            </form>
-                                        @endif
-                                        
-                                        @if ($order->status === 'being_washed')
-                                            <form action="{{ $isStaff ? route('staff.orders.show', $order) : route('outlet.staff.order.show', ['outlet' => request()->route('outlet'), 'order' => $order]) }}" method="POST">
-                                                @csrf
-                                                @method('PATCH')
-                                                <input type="hidden" name="status" value="ready_for_pickup">
-                                                <button type="submit" class="btn btn-accent btn-sm w-full">Ready for Pickup</button>
-                                            </form>
-                                        @endif
-                                        
-                                        @if ($order->status === 'ready_for_pickup')
-                                            <form action="{{ $isStaff ? route('staff.orders.show', $order) : route('outlet.staff.order.show', ['outlet' => request()->route('outlet'), 'order' => $order]) }}" method="POST">
-                                                @csrf
-                                                @method('PATCH')
-                                                <input type="hidden" name="status" value="done">
-                                                <button type="submit" class="btn btn-success btn-sm w-full">Complete Order</button>
-                                            </form>
-                                        @endif
-                                    </div>
-                                @else
-                                    <div class="alert alert-success">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                        </svg>
-                                        <span>Order completed!</span>
-                                    </div>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Payment Status Card -->
+                                        <!-- Payment Status Card -->
                     <div class="card bg-base-100 shadow-xl">
                         <div class="card-body">
                             <h3 class="card-title">Payment</h3>
@@ -217,6 +135,73 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <!-- Status Card -->
+                    <div class="card bg-base-100 shadow-xl">
+                        <div class="card-body">
+                            <h3 class="card-title">Status</h3>
+                            
+                            <div class="">
+                                <!-- Status Timeline -->
+                                <ul class="steps steps-vertical">
+                                    <li class="step {{ in_array($order->status, ['ordered', 'accepted', 'being_washed', 'ready_for_pickup', 'done']) ? 'step-primary' : '' }}">Ordered</li>
+                                    <li class="step {{ in_array($order->status, ['accepted', 'being_washed', 'ready_for_pickup', 'done']) ? 'step-primary' : '' }}">Accepted</li>
+                                    <li class="step {{ in_array($order->status, ['being_washed', 'ready_for_pickup', 'done']) ? 'step-primary' : '' }}">Being Washed</li>
+                                    <li class="step {{ in_array($order->status, ['ready_for_pickup', 'done']) ? 'step-primary' : '' }}">Ready for Pickup</li>
+                                    <li class="step {{ $order->status === 'done' ? 'step-primary' : '' }}">Done</li>
+                                </ul>
+
+                                @if ($order->status !== 'done')
+                                    <div class="flex flex-col gap-2">
+                                        @if ($order->status === 'ordered')
+                                            <form action="{{ $isStaff ? route('staff.orders.show', $order) : route('outlet.staff.order.show', ['outlet' => request()->route('outlet'), 'order' => $order]) }}" method="POST">
+                                                @csrf
+                                                @method('PATCH')
+                                                <input type="hidden" name="status" value="accepted">
+                                                <button type="submit" class="btn btn-square bg-primary text-base-100 btn-md  hover:opacity-85 transition-all duration-500 w-full">Accept Order</button>
+                                            </form>
+                                        @endif
+                                        
+                                        @if ($order->status === 'accepted')
+                                            <form action="{{ $isStaff ? route('staff.orders.show', $order) : route('outlet.staff.order.show', ['outlet' => request()->route('outlet'), 'order' => $order]) }}" method="POST">
+                                                @csrf
+                                                @method('PATCH')
+                                                <input type="hidden" name="status" value="being_washed">
+                                                <button type="submit" class="btn btn-square bg-warning btn-md  hover:opacity-85 transition-all duration-500 w-full">Start Washing</button>
+                                            </form>
+                                        @endif
+                                        
+                                        @if ($order->status === 'being_washed')
+                                            <form action="{{ $isStaff ? route('staff.orders.show', $order) : route('outlet.staff.order.show', ['outlet' => request()->route('outlet'), 'order' => $order]) }}" method="POST">
+                                                @csrf
+                                                @method('PATCH')
+                                                <input type="hidden" name="status" value="ready_for_pickup">
+                                                <button type="submit" class="btn btn-square bg-primary text-base-100 btn-md  hover:opacity-85 transition-all duration-500 w-full">Ready for Pickup</button>
+                                            </form>
+                                        @endif
+                                        
+                                        @if ($order->status === 'ready_for_pickup')
+                                            <form action="{{ $isStaff ? route('staff.orders.show', $order) : route('outlet.staff.order.show', ['outlet' => request()->route('outlet'), 'order' => $order]) }}" method="POST">
+                                                @csrf
+                                                @method('PATCH')
+                                                <input type="hidden" name="status" value="done">
+                                                <button type="submit" class="btn btn-square bg-success btn-md text-base-100 hover:opacity-85 transition-all duration-500 w-full">Complete Order</button>
+                                            </form>
+                                        @endif
+                                    </div>
+                                @else
+                                    <div class="alert alert-success">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        <span>Order completed!</span>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+
+
                 </div>
             </div>
         </div>

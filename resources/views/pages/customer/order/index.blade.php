@@ -1,4 +1,4 @@
-@php $isStaff = auth()->user()?->hasRole('staff'); @endphp
+@php $isCustomer = auth()->user()?->hasRole('customer'); @endphp
 
 <x-app-layout>
     <x-slot name="header">
@@ -47,21 +47,6 @@
                             <option value="paid">Paid</option>
                             <option value="unpaid">Unpaid</option>
                         </select>
-
-                        <div class="w-full text-right">
-                        <a
-                            href="{{ $isStaff
-                                ? route('staff.orders.create')
-                                : route('outlet.staff.order.create', [
-                                    'outlet' => request()->route('outlet'),
-                                    'staff'  => request()->route('staff'),
-                                ]) }}"
-                            class="btn btn-primary text-base-100"
-                        >
-                            <i class="fa-solid fa-plus"></i>
-                            Create Order
-                        </a>
-                        </div>
                     </div>
 
                     <!-- Orders Table -->
@@ -70,7 +55,7 @@
                             <thead>
                                 <tr>
                                     <th>Order Code</th>
-                                    <th>Customer</th>
+                                    <!-- <th>Customer</th> -->
                                     <th>Status</th>
                                     <th>Payment</th>
                                     <th>Total</th>
@@ -133,11 +118,11 @@
 
                                         <td class="text-center">
                                             <a
-                                                href="{{ $isStaff
-                                                    ? route('staff.orders.show', ['order' => $order])
-                                                    : route('outlet.staff.order.show', [
+                                                href="{{ $isCustomer
+                                                    ? route('customer.order.show', ['order' => $order])
+                                                    : route('outlet.customer.order.show', [
                                                         'outlet' => request()->route('outlet'),
-                                                        'staff'  => request()->route('staff'),
+                                                        'customer'  => request()->route('customer'),
                                                         'order'  => $order,
                                                     ]) }}"
                                                 class="btn btn-square btn-ghost btn-md"

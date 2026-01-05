@@ -44,11 +44,11 @@
                         <h3 class="card-title mb-4">Order Details</h3>
 
                         <!-- Customer Selection -->
-                        <div class="form-control w-full mb-4">
+                        <div class="form-control w-full">
                             <label class="label">
                                 <span class="label-text">Customer <span class="text-xs opacity-60">(Optional - Leave empty for walk-in)</span></span>
                             </label>
-                            <select name="customer_id" class="select select-bordered w-full" id="customerSelect">
+                            <select name="customer_id" class="select select-bordered rounded-field border-base-300 w-full" id="customerSelect">
                                 <option value="">Walk-in Customer</option>
                                 @foreach ($customers as $customer)
                                     <option value="{{ $customer->id }}" 
@@ -67,12 +67,12 @@
                         </div>
 
                         <!-- Delivery Address -->
-                        <div class="form-control w-full mb-4">
+                        <div class="form-control flex flex-col w-full mb-4">
                             <label class="label">
                                 <span class="label-text">Delivery Address <span class="text-xs opacity-60">(Optional - Leave empty for pickup)</span></span>
                             </label>
                             <textarea name="address" 
-                                      class="textarea textarea-bordered h-24" 
+                                      class="textarea textarea-bordered rounded-field border-base-300 w-full h-24" 
                                       placeholder="Enter delivery address or leave empty for pickup at outlet"
                                       id="addressInput">{{ old('address') }}</textarea>
                             @error('address')
@@ -85,10 +85,10 @@
                         <div class="divider"></div>
 
                         <!-- Order Items -->
-                        <div class="mb-4">
-                            <div class="flex justify-between items-center mb-4">
-                                <h3 class="text-lg font-semibold">Order Items</h3>
-                                <button type="button" class="btn btn-sm btn-primary" id="addItemBtn">
+                        <div class="">
+                            <div class="mb-4 flex flex-row justify-between w-full">
+                                <h3 class="card-title ">Order Items</h3>
+                                <button type="button" class="btn btn-sm bg-primary px-4 text-base-100 transition-all duration-300 hover:opacity-85" id="addItemBtn">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                                         <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
                                     </svg>
@@ -108,10 +108,11 @@
                         </div>
 
                         <div class="divider"></div>
+                        
+                        <h3 class="card-title">Order Summary</h3>
 
                         <!-- Order Summary -->
                         <div class="bg-base-200 rounded-lg p-4">
-                            <h3 class="text-lg font-semibold mb-4">Order Summary</h3>
                             <div class="space-y-2" id="summaryContainer">
                                 <div class="text-center text-gray-500 py-4">
                                     Add items to see summary
@@ -125,13 +126,13 @@
                         </div>
 
                         <!-- Submit Button -->
-                        <div class="card-actions justify-end mt-6">
+                        <div class="card-actions flex items-center gap-4 justify-end mt-6">
                             <button type="button" 
                                     onclick="window.location='{{ $isStaff ? route('staff.orders.index') : route('outlet.staff.order.index', ['outlet' => request()->route('outlet'), 'staff' => request()->route('staff')]) }}'" 
                                     class="btn btn-ghost">
                                 Cancel
                             </button>
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-sm bg-primary px-4 text-base-100 transition-all duration-300 hover:opacity-85">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                                 </svg>
@@ -181,7 +182,7 @@
                                     <span class="label-text">Service</span>
                                 </label>
                                 <select name="items[${itemCount}][laundry_service_id]" 
-                                        class="select select-bordered w-full service-select" 
+                                        class="select select-bordered rounded-field border-base-300 w-full service-select" 
                                         data-item-id="${itemCount}"
                                         required>
                                     <option value="">Select Service</option>
@@ -199,7 +200,7 @@
                                 </label>
                                 <input type="number" 
                                        name="items[${itemCount}][quantity]" 
-                                       class="input input-bordered w-full quantity-input" 
+                                       class="input input-bordered rounded-field border-base-300 w-full quantity-input" 
                                        data-item-id="${itemCount}"
                                        placeholder="Enter quantity" 
                                        min="1" 
