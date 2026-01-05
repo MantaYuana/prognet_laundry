@@ -26,6 +26,19 @@
                         ['label' => 'Luxe', 'url' => route('dashboard'), 'active' => false],
                         ['label' => 'Dashboard', 'url' => null, 'active' => true]
                     ];
+                } elseif (request()->routeIs('customer.outlet.index')) {
+                    $pageTitle = 'Find Laundry Outlets';
+                    $breadcrumbs = [
+                        ['label' => 'Luxe', 'url' => route('dashboard'), 'active' => false],
+                        ['label' => 'Find Outlets', 'url' => null, 'active' => true]
+                    ];
+                } elseif (request()->routeIs('customer.outlet.show')) {
+                    $pageTitle = 'Outlet Detail';
+                    $breadcrumbs = [
+                        ['label' => 'Luxe', 'url' => route('dashboard'), 'active' => false],
+                        ['label' => 'Find Outlets', 'url' => route('customer.outlet.index'), 'active' => false],
+                        ['label' => 'Detail', 'url' => null, 'active' => true]
+                    ];
                 } elseif (request()->routeIs('customer.order.index')) {
                     $pageTitle = 'My Orders';
                     $breadcrumbs = [
@@ -201,6 +214,21 @@
                 <div class="px-3 mt-6 mb-2 sidebar-text">
                     <span class="text-xs font-semibold tracking-wider text-teal-200 uppercase">Customer</span>
                 </div>
+
+                <!-- Find Outlets -->
+                <a href="{{ route('customer.outlet.index') }}" 
+                   class="flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-all duration-300 {{ request()->routeIs('customer.outlet.*') ? 'bg-gradient-to-r from-teal-500 to-cyan-500 shadow-lg' : 'hover:bg-teal-600/50' }}">
+                    <svg class="w-5 h-5 flex-shrink-0 {{ request()->routeIs('customer.outlet.*') ? 'text-white' : 'text-teal-200' }}" 
+                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    <span class="font-medium sidebar-text {{ request()->routeIs('customer.outlet.*') ? 'text-white' : 'text-teal-100' }}">
+                        Find Outlets
+                    </span>
+                </a>
 
                 <!-- Orders -->
                 <a href="{{ route('customer.order.index') }}" 
