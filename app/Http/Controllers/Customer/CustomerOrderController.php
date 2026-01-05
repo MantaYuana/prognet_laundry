@@ -53,20 +53,20 @@ class CustomerOrderController extends Controller {
 
     public function store(Request $request, Outlet $outlet, OrderService $order_service) {
         $customer = Customer::where('user_id', auth()->id())->firstOrFail();
-
+        
         $data = $request->validate([
             'address' => 'nullable|string|max:500',
             'items' => 'required|array|min:1',
             'items.*.laundry_service_id' => 'required|exists:laundry_services,id',
             'items.*.quantity' => 'required|integer|min:1',
         ]);
-
+        
         $service_ids = collect($data['items'])->pluck('laundry_service_id');
         $valid_service = LaundryService::whereIn('id', $service_ids)
-            ->where('outlet_id', $outlet->id)
-            ->count();
+        ->where('outlet_id', $outlet->id)
+        ->count();
 
-        if ($valid_service !== $service_ids->count()) {
+        if ($valid_service !== $service_ids->unique()->count()) {
             return back()->withErrors(['items' => 'Invalid services selected for this outlet.']);
         }
 

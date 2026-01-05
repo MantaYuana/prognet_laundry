@@ -47,16 +47,6 @@
                             <option value="paid">Paid</option>
                             <option value="unpaid">Unpaid</option>
                         </select>
-
-                        <div class="w-full text-right">
-                        <a
-                            href=""
-                            class="btn btn-primary text-base-100"
-                        >
-                            <i class="fa-solid fa-plus"></i>
-                            Create Order
-                        </a>
-                        </div>
                     </div>
 
                     <!-- Orders Table -->
@@ -129,7 +119,7 @@
                                         <td class="text-center">
                                             <a
                                                 href="{{ $isCustomer
-                                                    ? route('customer.orders.show', ['order' => $order])
+                                                    ? route('customer.order.show', ['order' => $order])
                                                     : route('outlet.customer.order.show', [
                                                         'outlet' => request()->route('outlet'),
                                                         'customer'  => request()->route('customer'),
