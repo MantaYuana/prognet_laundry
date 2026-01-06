@@ -9,7 +9,7 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
     <link rel="icon" type="image/x-icon" href="{{ asset('images/LuxeLogo.png') }}">
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js']) 
     
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
 </head>
@@ -27,7 +27,7 @@
 
                 <div class="hidden md:block">
                     <div class="flex items-baseline space-x-8">
-                        <a href="#home" class="text-sm font-medium text-gray-900 hover:text-primary transition-colors">Home</a>
+                        <a href="#home" class="text-sm font-medium text-gray-900 hover:text-primary transition-colors">MJS DEMO UAS</a>
                         <a href="#about" class="text-sm font-medium text-gray-500 hover:text-primary transition-colors">About Us</a>
                         <a href="#services" class="text-sm font-medium text-gray-500 hover:text-primary transition-colors">Services</a>
                     </div>
