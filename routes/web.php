@@ -41,6 +41,7 @@ Route::middleware(['auth', 'role:customer'])->group(function () {
     Route::get('outlet/find/{outlet}', [CustomerOutletFinderController::class, 'show'])->name('customer.outlet.show');
     Route::get('outlet/{outlet}/neworder', [CustomerOrderController::class, 'create'])->name('customer.order.create');
     Route::post('outlet/{outlet}/neworder', [CustomerOrderController::class, 'store'])->name('customer.order.store');
+    Route::post('outlet/{outlet}/validate-promo', [CustomerOrderController::class, 'validatePromo'])->name('customer.order.validate-promo');
     Route::get('orders', [CustomerOrderController::class, 'index'])->name('customer.order.index');
     Route::get('orders/{order}', [CustomerOrderController::class, 'show'])->name('customer.order.show');
     Route::post('orders/{order}/payment-proof', [CustomerOrderController::class, 'uploadPaymentProof'])->name('customer.order.payment-proof');

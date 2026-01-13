@@ -112,6 +112,8 @@ class CustomerOrderSeeder extends Seeder {
                     'customer_id' => $customer->id,
                     'outlet_id' => $outlet->id,
                     'staff_id' => $staff->id,
+                    'subtotal' => 0,
+                    'discount_amount' => 0,
                     'total' => 0,
                 ]);
 
@@ -127,14 +129,14 @@ class CustomerOrderSeeder extends Seeder {
                         'order_id' => $order->id,
                         'laundry_service_id' => $service->id,
                         'quantity' => $qty,
-                        'unit_price' => $unit,
+                        'item_price' => $unit,
                         'subtotal' => $subtotal,
                     ]);
 
                     $total += $subtotal;
                 }
 
-                $order->update(['total' => $total]);
+                $order->update(['subtotal' => $total, 'total' => $total]);
             }
         }
     }
