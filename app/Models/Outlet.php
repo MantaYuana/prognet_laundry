@@ -14,6 +14,7 @@ class Outlet extends Model {
         'name',
         'address',
         'phone_number',
+        'testingUAS',
         'owner_id'
     ];
 
@@ -25,12 +26,15 @@ class Outlet extends Model {
         return $this->hasMany(Staff::class);
     }
 
-    public function user()
-{
-    return $this->belongsTo(User::class);
-}
+    public function user() {
+        return $this->belongsTo(User::class);
+    }
 
-    public function services(){
+    public function services() {
         return $this->hasMany(LaundryService::class);
+    }
+
+    public function promos() {
+        return $this->hasMany(Promo::class);
     }
 }
