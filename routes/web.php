@@ -8,6 +8,7 @@ use App\Http\Controllers\Staff\StaffOrderController;
 use App\Http\Controllers\Customer\CustomerOrderController;
 use App\Http\Controllers\Customer\CustomerOutletFinderController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PromoController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome');
@@ -50,6 +51,7 @@ Route::middleware(['auth', 'role:owner', 'owner'])->group(function () {
     Route::resource('outlet.services', LaundryServiceController::class);
     Route::resource('outlet.staff', StaffManagementController::class);
     Route::resource('outlet.staff.order', StaffOrderController::class);
+    Route::resource('outlet.promo', PromoController::class);
 });
 
 Route::middleware(['auth', 'role:staff', 'staff'])->group(function () {
