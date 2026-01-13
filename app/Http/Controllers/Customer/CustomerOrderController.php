@@ -47,24 +47,26 @@ class CustomerOrderController extends Controller {
                 ->route('customer.outlet.show', $outlet)
                 ->with('error', 'This outlet has no services available yet.');
         }
+        $promos = $outlet->promos()->active()->get();
 
-        return view('pages.customer.order.create', compact('outlet', 'services'));
+        return view('pages.customer.order.create', compact('outlet', 'services', 'promos'));
     }
 
     public function store(Request $request, Outlet $outlet, OrderService $order_service) {
         $customer = Customer::where('user_id', auth()->id())->firstOrFail();
-        
+
         $data = $request->validate([
             'address' => 'nullable|string|max:500',
+            'promo_code' => 'nullable|string|max:20',
             'items' => 'required|array|min:1',
             'items.*.laundry_service_id' => 'required|exists:laundry_services,id',
             'items.*.quantity' => 'required|integer|min:1',
         ]);
-        
+
         $service_ids = collect($data['items'])->pluck('laundry_service_id');
         $valid_service = LaundryService::whereIn('id', $service_ids)
-        ->where('outlet_id', $outlet->id)
-        ->count();
+            ->where('outlet_id', $outlet->id)
+            ->count();
 
         if ($valid_service !== $service_ids->unique()->count()) {
             return back()->withErrors(['items' => 'Invalid services selected for this outlet.']);
@@ -85,7 +87,7 @@ class CustomerOrderController extends Controller {
         $customer = Customer::where('user_id', auth()->id())->firstOrFail();
         abort_if($order->customer_id !== $customer->id, 403);
 
-        $order->load(['outlet', 'staff.profile', 'items.laundryService']);
+        $order->load(['outlet', 'staff.profile', 'items.laundryService', 'promo']);
 
         return view('pages.customer.order.show', compact('order'));
     }
@@ -109,5 +111,41 @@ class CustomerOrderController extends Controller {
         ]);
 
         return back()->with('success', 'Payment proof uploaded. Awaiting verification.');
+    }
+
+    // TODO: ni connect ke AJAX ya buat ngecek promonya
+    public function validatePromo(Request $request, Outlet $outlet, OrderService $orderService) {
+        $validated = $request->validate([
+            'promo_code' => 'required|string|max:20',
+            'amount' => 'required|numeric|min:0',
+        ]);
+
+        $result = $orderService->validatePromo(
+            $validated['promo_code'],
+            $outlet->id,
+            $validated['amount']
+        );
+
+        if (isset($result['error'])) {
+            return response()->json([
+                'success' => false,
+                'message' => $result['error']
+            ], 422);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'promo_name' => $result['promo']->name,
+                'promo_description' => $result['promo']->description,
+                'promo_type' => $result['promo']->type,
+                'promo_value' => $result['promo']->value,
+                'discount_amount' => $result['discount_amount'],
+                'subtotal' => $result['promo']->type === 'percentage' 
+                    ? $validated['amount'] 
+                    : $validated['amount'],
+                'final_total' => $result['final_total'],
+            ]
+        ]);
     }
 }

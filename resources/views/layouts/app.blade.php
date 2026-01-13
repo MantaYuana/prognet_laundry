@@ -5,7 +5,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Luxe') }}</title>
+        {{-- <title>{{ config('app.name', 'Luxe') }}</title> --}}
+        <title>Luxe - Premium Laundry Service</title>
+        <link rel="icon" type="image/x-icon" href="{{ asset('images/LuxeLogo.png') }}">
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">

@@ -25,10 +25,15 @@ class CustomerOutletFinderController extends Controller {
         return view('pages.customer.outlet.index', compact('outlets'));
     }
 
-    public function show(Outlet $outlet) {
-        // TODO: also load owner profile mate
+public function show(Outlet $outlet) {
+        // Load data services seperti biasa
         $outlet->load(['services']);
 
-        return view('pages.customer.outlet.show', compact('outlet'));
+        // --- TAMBAHAN PENTING ---
+        // Ambil promo yang aktif
+        $promos = $outlet->promos()->active()->get(); 
+        
+        // Kirim $promos ke view pakai compact
+        return view('pages.customer.outlet.show', compact('outlet', 'promos'));
     }
-}
+    }

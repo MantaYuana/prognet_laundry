@@ -8,6 +8,7 @@ use App\Http\Controllers\Staff\StaffOrderController;
 use App\Http\Controllers\Customer\CustomerOrderController;
 use App\Http\Controllers\Customer\CustomerOutletFinderController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PromoController;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome');
@@ -40,6 +41,7 @@ Route::middleware(['auth', 'role:customer'])->group(function () {
     Route::get('outlet/find/{outlet}', [CustomerOutletFinderController::class, 'show'])->name('customer.outlet.show');
     Route::get('outlet/{outlet}/neworder', [CustomerOrderController::class, 'create'])->name('customer.order.create');
     Route::post('outlet/{outlet}/neworder', [CustomerOrderController::class, 'store'])->name('customer.order.store');
+    Route::post('outlet/{outlet}/validate-promo', [CustomerOrderController::class, 'validatePromo'])->name('customer.order.validate-promo');
     Route::get('orders', [CustomerOrderController::class, 'index'])->name('customer.order.index');
     Route::get('orders/{order}', [CustomerOrderController::class, 'show'])->name('customer.order.show');
     Route::post('orders/{order}/payment-proof', [CustomerOrderController::class, 'uploadPaymentProof'])->name('customer.order.payment-proof');
@@ -50,6 +52,7 @@ Route::middleware(['auth', 'role:owner', 'owner'])->group(function () {
     Route::resource('outlet.services', LaundryServiceController::class);
     Route::resource('outlet.staff', StaffManagementController::class);
     Route::resource('outlet.staff.order', StaffOrderController::class);
+    Route::resource('outlet.promo', PromoController::class);
 });
 
 Route::middleware(['auth', 'role:staff', 'staff'])->group(function () {

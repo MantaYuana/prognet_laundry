@@ -17,6 +17,7 @@ class Customer extends Model {
     ];
 
     public function profile() {
-        return $this->belongsTo(User::class);
+        // NOTE: tf ??? what does added a column name do ????
+        return $this->belongsTo(User::class, "user_id");
     }
 }

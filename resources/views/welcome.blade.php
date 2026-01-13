@@ -154,7 +154,7 @@
                 
                 <div class="relative order-2 lg:order-1">
                     <div class="relative overflow-hidden shadow-xl rounded-3xl bg-gray-100 aspect-square border border-gray-100">
-                         <img src="{{ asset('images/mesincuci.PNG') }}" alt="Tentang Luxe Laundry" class="object-cover w-full h-full">
+                         <img src="{{ asset('images/mesincuci.png') }}" alt="Tentang Luxe Laundry" class="object-cover w-full h-full">
                     </div>
                     <div class="absolute -bottom-10 -right-10 w-40 h-40 rounded-full bg-primary/10 -z-10"></div>
                 </div>

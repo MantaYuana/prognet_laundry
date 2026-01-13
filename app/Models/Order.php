@@ -26,7 +26,11 @@ class Order extends Model {
         'payment_proof_path',
         'proof',
         'address',
+        'subtotal',
+        'discount_amount',
         'total',
+        'promo_id',
+        'promo_code',
         'customer_id',
         'outlet_id',
         'staff_id',
@@ -34,6 +38,9 @@ class Order extends Model {
 
     protected $casts = [
         'payment_confirm' => 'bool',
+        'subtotal' => 'integer',
+        'discount_amount' => 'decimal:2',
+        'total' => 'integer'
     ];
 
     public function customer() {
@@ -50,5 +57,13 @@ class Order extends Model {
 
     public function items() {
         return $this->hasMany(OrderDetail::class);
+    }
+
+    public function promo() {
+        return $this->belongsTo(Promo::class);
+    }
+
+    public function calculateTotal(): int {
+        return max(0, $this->subtotal - (int)($this->discount_amount * 100));
     }
 }
