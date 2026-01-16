@@ -53,6 +53,7 @@ Route::middleware(['auth', 'role:owner', 'owner'])->group(function () {
     Route::resource('outlet.staff', StaffManagementController::class);
     Route::resource('outlet.staff.order', StaffOrderController::class);
     Route::resource('outlet.promo', PromoController::class);
+    Route::post('outlet/{outlet}/staff/order/validate-promo', [StaffOrderController::class, 'validatePromoForOutlet'])->name('outlet.staff.order.validate-promo');
 });
 
 Route::middleware(['auth', 'role:staff', 'staff'])->group(function () {
@@ -63,6 +64,7 @@ Route::middleware(['auth', 'role:staff', 'staff'])->group(function () {
     Route::patch('staff/orders/{order}', [StaffOrderController::class, 'update'])->name('staff.orders.update');
     Route::post('staff/orders/{order}/payment/approve', [StaffOrderController::class, 'approvePayment'])->name('staff.orders.payment.approve');
     Route::post('staff/orders/{order}/payment/reject', [StaffOrderController::class, 'rejectPayment'])->name('staff.orders.payment.reject');
+    Route::post('staff/orders/validate-promo', [StaffOrderController::class, 'validatePromo'])->name('staff.orders.validate-promo');
 });
 
 require __DIR__ . '/auth.php';

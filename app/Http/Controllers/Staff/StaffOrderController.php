@@ -75,6 +75,7 @@ class StaffOrderController extends Controller {
             'customer_id' => 'nullable|exists:customers,id',
             'address' => 'nullable|string|max:255',
             'items' => 'required|array|min:1',
+            'promo_code' => 'nullable|string|max:20',
             'items.*.laundry_service_id' => 'required|exists:laundry_services,id',
             'items.*.quantity' => 'required|integer|min:1',
         ]);
@@ -175,5 +176,74 @@ class StaffOrderController extends Controller {
         ]);
 
         return back()->with('success', 'Payment rejected');
+    }
+
+    public function validatePromo(Request $request, OrderService $orderService) {
+        $user = auth()->user();
+        $staff = Staff::where('user_id', $user->id)->first();
+
+        $validated = $request->validate([
+            'promo_code' => 'required|string|max:20',
+            'amount' => 'required|numeric|min:0',
+        ]);
+
+        $result = $orderService->validatePromo(
+            $validated['promo_code'],
+            $staff->outlet_id,
+            $validated['amount']
+        );
+
+        if (isset($result['error'])) {
+            return response()->json([
+                'success' => false,
+                'message' => $result['error']
+            ], 422);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'promo_name' => $result['promo']->name,
+                'promo_description' => $result['promo']->description,
+                'promo_type' => $result['promo']->type,
+                'promo_value' => $result['promo']->value,
+                'discount_amount' => $result['discount_amount'],
+                'subtotal' => $validated['amount'],
+                'final_total' => $result['final_total'],
+            ]
+        ]);
+    }
+
+    public function validatePromoForOutlet(Request $request, $outlet, OrderService $orderService) {
+        $validated = $request->validate([
+            'promo_code' => 'required|string|max:20',
+            'amount' => 'required|numeric|min:0',
+        ]);
+
+        $result = $orderService->validatePromo(
+            $validated['promo_code'],
+            $outlet,
+            $validated['amount']
+        );
+
+        if (isset($result['error'])) {
+            return response()->json([
+                'success' => false,
+                'message' => $result['error']
+            ], 422);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'promo_name' => $result['promo']->name,
+                'promo_description' => $result['promo']->description,
+                'promo_type' => $result['promo']->type,
+                'promo_value' => $result['promo']->value,
+                'discount_amount' => $result['discount_amount'],
+                'subtotal' => $validated['amount'],
+                'final_total' => $result['final_total'],
+            ]
+        ]);
     }
 }

@@ -185,6 +185,11 @@
     </div>
 
     <script>
+        const validatePromoUrl = "{{ route('customer.order.validate-promo', $outlet) }}";
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        let appliedPromo = null;
+        let currentDiscount = 0;
+        
         const services = @json($services);
         let itemCount = 0;
 
@@ -227,13 +232,13 @@
                                     <span class="label-text">Quantity</span>
                                 </label>
                                 <input type="number" 
-                                       name="items[${itemCount}][quantity]" 
-                                       class="input input-bordered rounded-field border-base-300 w-full quantity-input" 
-                                       data-item-id="${itemCount}"
-                                       placeholder="Enter quantity" 
-                                       min="1" 
-                                       value="1"
-                                       required>
+                                    name="items[${itemCount}][quantity]" 
+                                    class="input input-bordered rounded-field border-base-300 w-full quantity-input" 
+                                    data-item-id="${itemCount}"
+                                    placeholder="Enter quantity" 
+                                    min="1" 
+                                    value="1"
+                                    required>
                             </div>
                         </div>
                         
@@ -330,11 +335,11 @@
             summaryContainer.innerHTML = summaryHtml || '<div class="text-center text-gray-500 py-4">Complete service details to see summary</div>';
             document.getElementById('subtotalAmount').textContent = `Rp ${formatNumber(subtotal)}`;
             
-            // update total with discount if promo is applied
+            // Update total with discount if promo is applied
             const finalTotal = subtotal - currentDiscount;
             document.getElementById('totalAmount').textContent = `Rp ${formatNumber(finalTotal)}`;
             
-            // revalidate promo if applied
+            // Revalidate promo if applied
             if (appliedPromo) {
                 validatePromoCode(document.getElementById('promoCodeInput').value, true);
             }
@@ -376,22 +381,22 @@
                     appliedPromo = result.data;
                     currentDiscount = result.data.discount_amount;
                     
-                    // show promo details
+                    // Show promo details
                     document.getElementById('promoName').textContent = result.data.promo_name;
                     document.getElementById('promoDescription').textContent = 
                         result.data.promo_description || 
                         `${result.data.promo_type === 'percentage' ? result.data.promo_value + '%' : 'Rp ' + formatNumber(result.data.promo_value)} discount`;
                     document.getElementById('promoDetails').classList.remove('hidden');
                     
-                    // update discount display
+                    // Update discount display
                     document.getElementById('discountAmount').textContent = `- Rp ${formatNumber(currentDiscount)}`;
                     document.getElementById('discountRow').classList.remove('hidden');
                     
-                    // update total
+                    // Update total
                     const finalTotal = subtotal - currentDiscount;
                     document.getElementById('totalAmount').textContent = `Rp ${formatNumber(finalTotal)}`;
                     
-                    // toggle buttons
+                    // Toggle buttons
                     document.getElementById('applyPromoBtn').classList.add('hidden');
                     document.getElementById('removePromoBtn').classList.remove('hidden');
                     document.getElementById('promoCodeInput').disabled = true;
@@ -450,7 +455,7 @@
             return str.replace(/\b\w/g, l => l.toUpperCase());
         }
 
-        // event listeners for promo
+        // Event listeners for promo
         document.addEventListener('DOMContentLoaded', function() {
             addOrderItem();
             
