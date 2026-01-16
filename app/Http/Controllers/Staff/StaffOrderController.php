@@ -10,6 +10,7 @@ use App\Models\LaundryService;
 use App\Models\Owner;
 use App\Models\Staff;
 use App\Services\OrderService;
+use App\Models\Promo;
 
 class StaffOrderController extends Controller {
     public function index() {
@@ -71,33 +72,84 @@ class StaffOrderController extends Controller {
     public function store(Request $request, OrderService $orderService) {
         $user = auth()->user();
 
+        // 1. Masukkan promo_code ke validasi agar datanya "ditangkap"
         $data = $request->validate([
             'customer_id' => 'nullable|exists:customers,id',
             'address' => 'nullable|string|max:255',
+            'promo_code' => 'nullable|string|exists:promos,promo_code', // <--- TAMBAHAN
             'items' => 'required|array|min:1',
             'items.*.laundry_service_id' => 'required|exists:laundry_services,id',
             'items.*.quantity' => 'required|integer|min:1',
         ]);
 
+        // Tentukan Outlet ID & Target Staff
         if ($user->hasRole('staff')) {
             $staff = Staff::where('user_id', $user->id)->first();
-            $data['outlet_id'] = $staff->outlet_id;
+            $outletId = $staff->outlet_id; // Simpan di variabel biar gampang
+            $data['outlet_id'] = $outletId;
             $target_staff_id = $staff->id;
         } else {
-            $data['outlet_id'] = request()->route('outlet');
+            $outletId = request()->route('outlet');
+            $data['outlet_id'] = $outletId;
             $target_staff_id = null;
         }
 
+        // --- 2. LOGIKA HITUNG PROMO (Mulai) ---
+        // Kita perlu hitung total harga kasar dulu untuk tahu diskonnya
+        $tempTotal = 0;
+        foreach ($data['items'] as $item) {
+            $service = LaundryService::find($item['laundry_service_id']);
+            $tempTotal += $service->price * $item['quantity'];
+        }
+
+        $discountAmount = 0;
+        $promoId = null;
+
+        // Cek jika ada promo code
+        if (!empty($data['promo_code'])) {
+            $promo = Promo::where('promo_code', $data['promo_code'])
+                          ->where('outlet_id', $outletId) // Pastikan promo milik outlet ini
+                          ->active() // Pastikan status aktif & tanggal valid
+                          ->first();
+
+            if ($promo) {
+                // Simpan ID Promo
+                $promoId = $promo->id;
+                
+                // Hitung nominal diskon
+                if ($promo->type == 'percentage') {
+                    $discountAmount = ($tempTotal * $promo->value) / 100;
+                    // Opsional: Batasi max diskon jika ada rule-nya
+                } else {
+                    $discountAmount = $promo->value;
+                }
+
+                // Pastikan diskon tidak melebihi total harga
+                if ($discountAmount > $tempTotal) {
+                    $discountAmount = $tempTotal;
+                }
+            }
+        }
+
+        // Masukkan data hasil hitungan ke array $data
+        // Supaya OrderService bisa menyimpannya ke database
+        $data['promo_id'] = $promoId;
+        $data['discount_amount'] = $discountAmount;
+        // Grand total biasanya dihitung ulang di Service, tapi kita kirim data pendukungnya
+        // --- LOGIKA HITUNG PROMO (Selesai) ---
+
+        // 3. Panggil Service untuk simpan ke database
         $orderService->create($data, $target_staff_id ?? null);
 
+        // Redirect
         if ($user->hasRole('staff')) {
             return redirect()
                 ->route('staff.orders.index')
-                ->with('success', 'Order created');
+                ->with('success', 'Order created successfully');
         } else {
             return redirect()
                 ->route('outlet.staff.order.index')
-                ->with('success', 'Order created');
+                ->with('success', 'Order created successfully');
         }
     }
 
