@@ -52,6 +52,21 @@
                         ['label' => 'Orders', 'url' => route('customer.order.index'), 'active' => false],
                         ['label' => 'Detail', 'url' => null, 'active' => true]
                     ];
+                } elseif (request()->routeIs('staff.orders.index')) {
+                    $pageTitle = 'Order Management';
+                    $breadcrumbs = [
+                        ['label' => 'Luxe', 'url' => route('dashboard'), 'active' => false],
+                        ['label' => 'Staff', 'url' => null, 'active' => false],
+                        ['label' => 'Orders', 'url' => null, 'active' => true]
+                    ];
+                } elseif (request()->routeIs('staff.orders.show')) {
+                    $pageTitle = 'Order Detail';
+                    $breadcrumbs = [
+                        ['label' => 'Luxe', 'url' => route('dashboard'), 'active' => false],
+                        ['label' => 'Staff', 'url' => null, 'active' => false],
+                        ['label' => 'Orders', 'url' => route('staff.orders.index'), 'active' => false],
+                        ['label' => 'Detail', 'url' => null, 'active' => true]
+                    ];
                 } elseif (request()->routeIs('outlet.index')) {
                     $pageTitle = 'Outlet';
                     $breadcrumbs = [
@@ -239,6 +254,26 @@
                               d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
                     </svg>
                     <span class="font-medium sidebar-text {{ request()->routeIs('customer.order.*') ? 'text-white' : 'text-teal-100' }}">
+                        Orders
+                    </span>
+                </a>
+                @endif
+
+                @if(Auth::check() && Auth::user()->hasRole('staff'))
+                <!-- Staff Section -->
+                <div class="px-3 mt-6 mb-2 sidebar-text">
+                    <span class="text-xs font-semibold tracking-wider text-teal-200 uppercase">Staff</span>
+                </div>
+
+                <!-- Orders Management -->
+                <a href="{{ route('staff.orders.index') }}" 
+                   class="flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-all duration-300 {{ request()->routeIs('staff.orders.*') ? 'bg-gradient-to-r from-teal-500 to-cyan-500 shadow-lg' : 'hover:bg-teal-600/50' }}">
+                    <svg class="w-5 h-5 flex-shrink-0 {{ request()->routeIs('staff.orders.*') ? 'text-white' : 'text-teal-200' }}" 
+                         fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 6h6m-6 4h6"/>
+                    </svg>
+                    <span class="font-medium sidebar-text {{ request()->routeIs('staff.orders.*') ? 'text-white' : 'text-teal-100' }}">
                         Orders
                     </span>
                 </a>
